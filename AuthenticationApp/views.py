@@ -30,7 +30,7 @@ def auth_login(request):
 			return HttpResponseRedirect(next_url)
 		else:
 			messages.warning(request, 'Invalid username or password.')
-			
+
 	context = {
 		"form": form,
 		"page_name" : "Login",
@@ -47,16 +47,16 @@ def auth_logout(request):
 def auth_register(request):
 	if request.user.is_authenticated():
 		return HttpResponseRedirect("/")
-	
+
 	form = RegisterForm(request.POST or None)
 	if form.is_valid():
-		new_user = MyUser.objects.create_user(email=form.cleaned_data['email'], 
-			password=form.cleaned_data["password2"], 
+		new_user = MyUser.objects.create_user(email=form.cleaned_data['email'],
+			password=form.cleaned_data["password2"],
 			first_name=form.cleaned_data['firstname'], last_name=form.cleaned_data['lastname'],
-    		is_student=form.cleaned_data['student'], is_professor=form.cleaned_data['professor'], 
+    		is_student=form.cleaned_data['student'], is_professor=form.cleaned_data['professor'],
     		is_engineer=form.cleaned_data['engineer'])
-		new_user.save()	
-		login(request, new_user);	
+		new_user.save()
+		login(request, new_user);
 		messages.success(request, 'Success! Your account was created.')
 		return render(request, 'index.html')
 

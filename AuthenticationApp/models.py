@@ -21,8 +21,12 @@ class MyUserManager(BaseUserManager):
         user.set_password(password)
 
         #If first_name is not present, set it as email's username by default
-        if first_name is None or first_name == "" or first_name == '':                                
-            user.first_name = email[:email.find("@")]            
+        if first_name is None or first_name == "" or first_name == '':
+            user.first_name = email[:email.find("@")]
+        else:
+            user.first_name = first_name
+            user.last_name = last_name
+
 
         #Classify the Users as Students, Professors, Engineers
         if is_student == True and is_professor == True and is_engineer == True:
@@ -36,7 +40,7 @@ class MyUserManager(BaseUserManager):
        		user.is_engineer = True
        	else:
        		user.is_admin = True
-        
+
         user.save(using=self._db)
         return user
 
@@ -71,13 +75,21 @@ class MyUser(AbstractBaseUser):
     	max_length=120,
     	null=True,
     	blank=True,
-    	)    
+    	)
 
     last_name = models.CharField(
     	max_length=120,
     	null=True,
     	blank=True,
     	)
+    #Professor
+    university_name = models.CharField(
+        max_length=120,
+        null=True,
+        blank=True,
+        )
+
+
 
     is_active = models.BooleanField(default=True,)
     is_admin = models.BooleanField(default=False,)
@@ -85,17 +97,17 @@ class MyUser(AbstractBaseUser):
     #New fields added
     is_student = models.BooleanField(default=False,)
     is_professor = models.BooleanField(default=False,)
-    is_engineer = models.BooleanField(default=False,)    
+    is_engineer = models.BooleanField(default=False,)
 
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    def get_full_name(self):        
+    def get_full_name(self):
         return "%s %s" %(self.first_name, self.last_name)
 
-    def get_short_name(self):        
+    def get_short_name(self):
         return self.first_name
 
     def __str__(self):              #Python 3
@@ -107,17 +119,15 @@ class MyUser(AbstractBaseUser):
     def has_perm(self, perm, obj=None):
         return True
 
-    def has_module_perms(self, app_label):        
+    def has_module_perms(self, app_label):
         return True
 
     @property
     def is_staff(self):
         return self.is_admin
-    
+
 #     def new_user_reciever(sender, instance, created, *args, **kwargs):
-#     	if created:   
-     
+#     	if created:
+
 # Going to use signals to send emails
 # post_save.connect(new_user_reciever, sender=MyUser)
-             
-
