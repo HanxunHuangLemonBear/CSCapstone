@@ -80,32 +80,30 @@ def getAddStudentFormSuccess(request):
             formU = forms.UniForm(request.POST, request.FILES)
 
             if formU.is_valid():
-                print("AAAAAAAAAAAAAAAAAAAAAAAAA")
                 in_name = formU.cleaned_data['name']
-                print(in_name)
                 in_user = models.MyUser.objects.get(email__exact=in_name)
-                print(in_user)
-            else:
-                print("BBBBBBBBBBBBBBBBBBBBBBBBB")
             
-            in_university_name = formU.cleaned_data['univName']
-	    in_university = models.University.objects.get(name__exact=in_university_name)
-
-            in_course_tag = formU.cleaned_data['cName']
-            in_course = in_university.course_set.get(tag__exact=in_course_tag)
+                in_university_name = formU.cleaned_data['univName']
+	        in_university = models.University.objects.get(name__exact=in_university_name)
+    
+                in_course_tag = formU.cleaned_data['cName']
+                in_course = in_university.course_set.get(tag__exact=in_course_tag)
         
-	    in_course.members.add(in_user)
-	    in_course.save();
-	    in_user.course_set.add(in_course)
-	    in_user.save()
+	        in_course.members.add(in_user)
+	        in_course.save();
+	        in_user.course_set.add(in_course)
+	        in_user.save()
             
-	    context = {
-	    	'university' : in_university,
-    		'course' : in_course,
-                'userInCourse': True,
-            }
+	        context = {
+	    	    'university' : in_university,
+    		    'course' : in_course,
+                    'userInCourse': True,
+                }   
 
-            return render(request, 'course.html', context)
+                return render(request, 'course.html', context)
+            else:
+                print("SOMETHING'S WRONG")
+
         else:
             form = forms.UniversityForm()
         return render(request, 'universityform.html')
