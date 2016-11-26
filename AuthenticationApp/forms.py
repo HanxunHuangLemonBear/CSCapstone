@@ -46,6 +46,12 @@ class RegisterForm(forms.Form):
         except:
             raise forms.ValidationError("There was an error, please contact us later")
 
+    def clean_first(self):
+        print("IN HERE!")
+        first = self.cleaned_data.get("firstname")
+        print(first)
+        return first
+
 class UpdateForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on
     the user, but replaces the password field with admin's

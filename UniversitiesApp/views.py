@@ -188,6 +188,10 @@ def joinCourse(request):
 		in_university = models.University.objects.get(name__exact=in_university_name)
 		in_course_tag = request.GET.get('course', 'None')
 		in_course = in_university.course_set.get(tag__exact=in_course_tag)
+		print("===========================")
+                print(request.user)
+                print(request.user.first_name)
+                print("===========================")
 		in_course.members.add(request.user)
 		in_course.save();
 		request.user.course_set.add(in_course)
@@ -200,12 +204,33 @@ def joinCourse(request):
 		return render(request, 'course.html', context)
 	return render(request, 'autherror.html')
 
+def unjoinCourseTeach(request):
+    if request.user.is_authenticated():
+	in_university_name = request.GET.get('name', 'None')
+	in_university = models.University.objects.get(name__exact=in_university_name)
+	in_course_tag = request.GET.get('course', 'None')
+	in_course = in_university.course_set.get(tag__exact=in_course_tag)
+	in_student = request.GET.get('me', 'None')
+        in_student = in_student.split( );
+        student = models.MyUser.objects.filter(first_name=in_student[0])
+	in_course.members.remove(student[0])
+	in_course.save();
+	student[0].course_set.remove(in_course)
+	student[0].save()
+        context = {
+		'university' : in_university,
+		'course' : in_course,
+		'userInCourse': False,
+	}
+	return render(request, 'course.html', context)
+    return render(request, 'autherror.html')
+
 def unjoinCourse(request):
 	if request.user.is_authenticated():
 		in_university_name = request.GET.get('name', 'None')
 		in_university = models.University.objects.get(name__exact=in_university_name)
 		in_course_tag = request.GET.get('course', 'None')
-		in_course = in_university.course_set.get(tag__exact=in_course_tag)
+                in_course = in_university.course_set.get(tag__exact=in_course_tag)
 		in_course.members.remove(request.user)
 		in_course.save();
 		request.user.course_set.remove(in_course)

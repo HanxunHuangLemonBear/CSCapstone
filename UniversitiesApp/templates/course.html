@@ -28,6 +28,9 @@
 					{% for item in course.members.all %}
 					<tr>
 						<td>{{ item.get_full_name }}</td>
+						<td>
+							<a href="/university/course/unjoinTeach?name={{ university.name }}&course={{ course.tag }}&me={{ item.get_full_name }}" class="btn btn-default">Remove User</a>
+						</td>
 					</tr>
 					{% endfor %}
 				</tbody>
