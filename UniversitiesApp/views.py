@@ -4,9 +4,18 @@ UniversitiesApp Views
 Created by Jacob Dunbar on 11/5/2016.
 """
 from django.shortcuts import render
-
+from django.db.models import Max
 from . import models
 from . import forms
+import datetime
+
+def isProfessor():
+    latest_login = models.MyUser.objects.all().aggregate(Max('last_login'))
+    dt = latest_login['last_login__max']
+    date_and_time = str(dt)[0:26]
+    max_user = models.MyUser.objects.filter(last_login=date_and_time)
+    return max_user[0].is_professor
+
 
 def getUniversities(request):
     if request.user.is_authenticated():
@@ -27,7 +36,11 @@ def getUniversity(request):
             'university' : in_university,
             'userIsMember': is_member,
         }
-        return render(request, 'university.html', context)
+        if isProfessor():
+            return render(request, 'university.html', context)
+        else:
+            return render(request, 'universityStudent.html', context)
+
     # render error page if user is not logged in
     return render(request, 'autherror.html')
 
@@ -61,6 +74,7 @@ def getUniversityFormSuccess(request):
     # render error page if user is not logged in
     return render(request, 'autherror.html')
 
+
 def joinUniversity(request):
     if request.user.is_authenticated():
         in_name = request.GET.get('name', 'None')
@@ -73,7 +87,10 @@ def joinUniversity(request):
             'university' : in_university,
             'userIsMember': True,
         }
-        return render(request, 'university.html', context)
+        if (isProfessor()):
+            return render(request, 'university.html', context)
+        else:
+            return render(request, 'universityStudent.html', context)
     return render(request, 'autherror.html')
     
 def unjoinUniversity(request):
@@ -88,7 +105,10 @@ def unjoinUniversity(request):
             'university' : in_university,
             'userIsMember': False,
         }
-        return render(request, 'university.html', context)
+        if (isProfessor()):
+            return render(request, 'university.html', context)
+        else:
+            return render(request, 'universityStudent.html', context)
     return render(request, 'autherror.html')
     
 def getCourse(request):

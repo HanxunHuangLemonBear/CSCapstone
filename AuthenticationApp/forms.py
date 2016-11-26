@@ -55,7 +55,7 @@ class UpdateForm(forms.ModelForm):
 
     class Meta:
         model = MyUser
-        logging.getLogger('console').error("error")
+        #logging.getLogger('console').error("error")
         if model.is_professor:
             fields = ('email', 'password', 'first_name', 'last_name', 'is_professor', 'university_name')
         else:
