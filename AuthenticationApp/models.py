@@ -83,11 +83,7 @@ class MyUser(AbstractBaseUser):
     	blank=True,
     	)
     #Professor
-    university_name = models.CharField(
-        max_length=120,
-        null=True,
-        blank=True,
-        )
+    university_name = models.ForeignKey('UniversitiesApp.University', null=True, blank=True);
 
 
 

@@ -57,20 +57,20 @@ class UpdateForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     password hash display field.
     """
-    password = ReadOnlyPasswordHashField()
+    uname = forms.CharField(
+        widget=forms.TextInput(attrs={'readonly':'readonly'})
+    )
 
     class Meta:
         model = MyUser
         #logging.getLogger('console').error("error")
-        if model.is_professor:
-            fields = ('email', 'password', 'first_name', 'last_name', 'is_professor', 'university_name')
-        else:
-            fields = ('email', 'password', 'first_name', 'last_name',
-                'is_student', 'is_professor', 'is_engineer')
+        fields = ('email', 'first_name', 'last_name',
+                'is_student', 'is_professor', 'is_engineer','uname')
 
 
     def clean_password(self):
         return self.initial["password"]
+
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
