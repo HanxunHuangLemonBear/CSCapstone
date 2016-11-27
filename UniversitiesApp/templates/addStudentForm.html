@@ -1,0 +1,26 @@
+{% extends "body.html" %}
+
+{% block content %}
+	<!-- Content -->
+	<div class="container" role="main">
+		<div class="jumbotron">
+			<h3 style="margin: 0px; padding: 0px;">Add a Student</h3>
+		</div>
+		<div class="panel panel-default">
+			<form method="post" enctype="multipart/form-data" action="/university/course/addStudentFormSuccess?Name={{name}}&UnivName={{univName}}" class="panel-body validate">
+                {% csrf_token %}
+				<label for="name">Email Address</label>
+                <h6 style="color:red">{{ error }}</h6>
+				<input type="text" name="name" id="name" placeholder="Name" class="form-control" data-bvalidator="required" data-bvalidator-msg="Email Required">
+				<br>
+				University: <input type="text" name="univName" id="univName" placeholder="{{university.name}}" value="{{ university.name }}" readonly/>
+				<br>
+				<br>
+				Course: <input type="text" name="cName" id="cName" placeholder="{{course.tag}}" value="{{course.tag}}" readonly/>
+				<br>
+				<br>
+				<input type="submit" value="Submit" class="btn btn-primary">
+			</form>
+		</div>
+    </div>
+{% endblock %}
