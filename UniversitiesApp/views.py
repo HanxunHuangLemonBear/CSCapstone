@@ -57,8 +57,8 @@ def getUniversityFormSuccess(request):
             if form.is_valid():
                 if models.University.objects.filter(name__exact=form.cleaned_data['name']).exists():
                     return render(request, 'universityform.html', {'error' : 'Error: That university name already exists!'})
-                new_university = models.University(name=form.cleaned_data['name'], 
-                                             photo=request.FILES['photo'],  
+                new_university = models.University(name=form.cleaned_data['name'],
+                                             photo=request.FILES['photo'],
                                              description=form.cleaned_data['description'],
                                              website=form.cleaned_data['website'])
                 new_university.save()
@@ -82,23 +82,23 @@ def getAddStudentFormSuccess(request):
             if formU.is_valid():
                 in_name = formU.cleaned_data['name']
                 in_user = models.MyUser.objects.get(email__exact=in_name)
-            
+
                 in_university_name = formU.cleaned_data['univName']
 	        in_university = models.University.objects.get(name__exact=in_university_name)
-    
+
                 in_course_tag = formU.cleaned_data['cName']
                 in_course = in_university.course_set.get(tag__exact=in_course_tag)
-        
+
 	        in_course.members.add(in_user)
 	        in_course.save();
 	        in_user.course_set.add(in_course)
 	        in_user.save()
-            
+
 	        context = {
 	    	    'university' : in_university,
     		    'course' : in_course,
                     'userInCourse': True,
-                }   
+                }
 
                 return render(request, 'course.html', context)
             else:
@@ -116,6 +116,7 @@ def joinUniversity(request):
         in_university.members.add(request.user)
         in_university.save();
         request.user.university_set.add(in_university)
+        request.user.university_name = in_university
         request.user.save()
         context = {
             'university' : in_university,
@@ -126,7 +127,7 @@ def joinUniversity(request):
         else:
             return render(request, 'universityStudent.html', context)
     return render(request, 'autherror.html')
-    
+
 def unjoinUniversity(request):
     if request.user.is_authenticated():
         in_name = request.GET.get('name', 'None')
@@ -134,6 +135,7 @@ def unjoinUniversity(request):
         in_university.members.remove(request.user)
         in_university.save();
         request.user.university_set.remove(in_university)
+        request.user.university_name = None
         request.user.save()
         context = {
             'university' : in_university,
@@ -144,7 +146,7 @@ def unjoinUniversity(request):
         else:
             return render(request, 'universityStudent.html', context)
     return render(request, 'autherror.html')
-    
+
 def getCourse(request):
 	if request.user.is_authenticated():
 		in_university_name = request.GET.get('name', 'None')
@@ -202,7 +204,7 @@ def addCourse(request):
 			return render(request, 'courseform.html')
 		# render error page if user is not logged in
 	return render(request, 'autherror.html')
-	
+
 def addStudentForm(request):
     if request.user.is_authenticated():
         in_university_name = request.GET.get('name', 'None')
@@ -288,7 +290,7 @@ def unjoinCourse(request):
 		in_course.save();
 		request.user.course_set.remove(in_course)
 		request.user.save()
-               
+
 	        context = {
 	          	'university' : in_university,
 			'course' : in_course,
