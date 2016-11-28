@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.contrib import messages
 
 
-from .forms import LoginForm, RegisterForm, UpdateForm
+from .forms import LoginForm, RegisterForm, UpdateForm, UpdateProfessorForm
 from .models import MyUser
 
 # Auth Views
@@ -70,7 +70,11 @@ def auth_register(request):
 
 @login_required
 def update_profile(request):
-	form = UpdateForm(request.POST or None, instance=request.user)
+	if request.user.is_professor == True:
+		form = UpdateProfessorForm(request.POST or None, instance=request.user)
+	else:
+		form = UpdateForm(request.POST or None, instance=request.user)
+
 	if form.is_valid():
 		form.save()
 		messages.success(request, 'Success, your profile was saved!')
@@ -82,3 +86,33 @@ def update_profile(request):
 		"links" : ["logout"],
 	}
 	return render(request, 'auth_form.html', context)
+
+
+@login_required
+def get_profile(request):
+	in_name = request.GET.get('name', 'None')
+	if in_name == None:
+		in_name = request.POST.get('name', 'None')
+
+	if in_name == None:
+		return
+
+	profile_User = MyUser.objects.get(email__exact=in_name)
+	context = {'currUser' : profile_User,}
+	if profile_User.is_professor == True:
+		if request.user.is_associated_professor == True or request.user.is_admin == True:
+			form = UpdateProfessorForm(request.POST or None, instance=profile_User)
+			if form.is_valid():
+				form.save()
+				messages.success(request, 'Success, your profile was saved!')
+
+			context = {
+				"form": form,
+				"page_name" : "Update",
+				"button_value" : "Update",
+				"links" : ["logout"],
+			}
+			return render(request, 'auth_form.html', context)
+
+		else:
+			return render(request, 'professorprofile.html',context)

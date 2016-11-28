@@ -82,8 +82,33 @@ class MyUser(AbstractBaseUser):
     	null=True,
     	blank=True,
     	)
+
+
     #Professor
     university_name = models.ForeignKey('UniversitiesApp.University', null=True, blank=True);
+
+    phone_number = models.CharField(
+    	max_length=120,
+    	null=True,
+    	blank=True,
+    	)
+
+    office = models.CharField(
+        max_length=120,
+        null=True,
+        blank=True,
+        )
+
+    title = models.CharField(
+        max_length=120,
+        null=True,
+        blank=True,
+        )
+
+    is_associated_professor = models.BooleanField(default=False,)
+    # end of Professors
+
+
 
 
     is_active = models.BooleanField(default=True,)
@@ -104,6 +129,23 @@ class MyUser(AbstractBaseUser):
 
     def get_short_name(self):
         return self.first_name
+
+    def get_first_name(self):
+        return self.first_name
+
+    def get_last_name(self):
+        return self.last_name
+
+    def get_university_name(self):
+        return self.university_name
+
+    def get_office(self):
+        return self.office
+
+    def get_title(self):
+        return self.title
+    def get_phone_number(self):
+        return self.phone_number
 
     def __str__(self):              #Python 3
         return self.email
