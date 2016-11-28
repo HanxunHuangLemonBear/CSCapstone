@@ -9,12 +9,14 @@
 			<p>{{ group.description }}</p>
 			{% if userIsMember %}
 			<a href="/group/unjoin?name={{ group.name }}" class="btn btn-default">Unjoin this Group</a>
+			<a href="/group/addMemberForm?name={{ group.name }}" class="btn btn-default">Add member</a>
+
 			{% else %}
 			<a href="/group/join?name={{ group.name }}" class="btn btn-default">Join this Group</a>
 			{% endif %}
 		</div>
 	</div>
-	
+
 	<div class="container">
 		<div class="table-responsive">
 			<table class="table table-striped sortable">
@@ -29,6 +31,19 @@
 						<td>{{ item.get_full_name }}</td>
 					</tr>
 					{% endfor %}
+				</tbody>
+			</table>
+			<table class="table table-striped sortable">
+				<thead>
+					<tr>
+						<th>Group Project</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<!--<td>{{ group.project.name }}</td>-->
+						<!--<td><a href="/project?name={{ group.project.name }}">{{ group.project.name }}</a></td>-->
+					</tr>
 				</tbody>
 			</table>
 		</div>

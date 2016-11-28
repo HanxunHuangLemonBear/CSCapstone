@@ -68,7 +68,7 @@ def joinGroup(request):
         }
         return render(request, 'group.html', context)
     return render(request, 'autherror.html')
-    
+
 def unjoinGroup(request):
     if request.user.is_authenticated():
         in_name = request.GET.get('name', 'None')
@@ -83,4 +83,45 @@ def unjoinGroup(request):
         }
         return render(request, 'group.html', context)
     return render(request, 'autherror.html')
-    
+
+def addMemberForm(request):
+    if request.user.is_authenticated():
+        in_name = request.GET.get('name', 'None')
+        in_group = models.Group.objects.get(name__exact=in_name)
+        context = {
+            'name' : in_name,
+            'group' : in_group,
+            'userIsMember': True,
+        }
+        return render(request, 'addMemberForm.html', context)
+
+
+def addMemberFormSuccess(request):
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            form = forms.AddMemberForm(request.POST, request.FILES)
+            #name = request.POST.get('name', 'None')
+            print("\n\n\n\n\n")
+            #print(name)
+            print("\n\n\n\n\n")
+            if form.is_valid():
+                in_email = form.cleaned_data['email']
+                user = models.MyUser.objects.get(email__exact=in_email)
+                #in_name = request.POST.get('name', 'None')
+                in_name = form.cleaned_data['group_name']
+                in_group = models.Group.objects.get(name__exact=in_name)
+                print(in_name)
+                in_group.members.add(user)
+                in_group.save();
+                user.group_set.add(in_group)
+                user.save()
+                context = {
+                    'group' : in_group,
+                    'userIsMember' : True
+                }
+                print("AAAAAA")
+                return render(request, 'group.html', context)
+            else:
+                return render(request, 'groups.html')
+    print("BBBBBB")
+    return render(request, 'autherror.html')
