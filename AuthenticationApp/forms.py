@@ -228,8 +228,8 @@ class UpdateEngineersForm(forms.ModelForm):
     class Meta:
         model = MyUser
         #logging.getLogger('console').error("error")
-        fields = ('email', 'first_name', 'last_name','university_name','title','office','phone_number','is_associated_professor')
-        widgets = {'university_name': forms.widgets.Select(attrs={'readonly': True,'disabled': True})}
+        fields = ('email', 'first_name', 'last_name','company_name','graduated_university','title','office','phone_number','is_associated_engineers','about')
+        widgets = {'company_name': forms.widgets.Select(attrs={'readonly': True,'disabled': True})}
 
 
     def clean_email(self):

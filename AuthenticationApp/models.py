@@ -110,7 +110,7 @@ class MyUser(AbstractBaseUser):
 
     # Engineers
     company_name = models.ForeignKey('CompaniesApp.Company', null=True, blank=True);
-    about = models.CharField(
+    about = models.TextField(
         max_length=120,
         null=True,
         blank=True,
@@ -156,8 +156,19 @@ class MyUser(AbstractBaseUser):
 
     def get_title(self):
         return self.title
+        
     def get_phone_number(self):
         return self.phone_number
+
+    def get_company_name(self):
+        return self.company_name
+
+    def get_about(self):
+        return self.about
+
+    def get_graduated_university(self):
+        return self.graduated_university
+
 
     def __str__(self):              #Python 3
         return self.email
