@@ -105,7 +105,6 @@ def get_profile(request):
 	except:
 		return render(request, 'not_found.html')
 
-
 	context = {'currUser' : profile_User,}
 	if profile_User.is_professor == True:
 		if request.user.is_associated_professor == True or request.user.is_admin == True:
@@ -113,27 +112,30 @@ def get_profile(request):
 			if form.is_valid():
 				form.save()
 				messages.success(request, 'Success, your profile was saved!')
-				context = {
-					"form": form,
-					"page_name" : "Update",
-					"button_value" : "Update",
-					"links" : ["logout"],
-					}
-				return render(request, 'auth_form.html', context)
+
+			context = {
+				"form": form,
+				"page_name" : "Update",
+				"button_value" : "Update",
+				"links" : ["logout"],
+			}
+			return render(request, 'auth_form.html', context)
 		else:
 			return render(request, 'professor_profile.html',context)
-	elif profile_User.is_engineer:
+
+	elif profile_User.is_engineer == True:
 		if request.user.is_associated_engineers == True or request.user.is_admin == True:
-			form = UpdateEngineersForm(request.POST or None, instance=profile_User)
+			form = UpdateProfessorForm(request.POST or None, instance=profile_User)
 			if form.is_valid():
 				form.save()
 				messages.success(request, 'Success, your profile was saved!')
-				context = {
-					"form": form,
-					"page_name" : "Update",
-					"button_value" : "Update",
-					"links" : ["logout"],
-					}
-				return render(request, 'auth_form.html', context)
+
+			context = {
+				"form": form,
+				"page_name" : "Update",
+				"button_value" : "Update",
+				"links" : ["logout"],
+			}
+			return render(request, 'auth_form.html', context)
 		else:
 			return render(request, 'engineers_profile.html',context)

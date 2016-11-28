@@ -44,8 +44,8 @@ def getCompanyFormSuccess(request):
             if form.is_valid():
                 if models.Company.objects.filter(name__exact=form.cleaned_data['name']).exists():
                     return render(request, 'companyform.html', {'error' : 'Error: That company name already exists!'})
-                new_company = models.Company(name=form.cleaned_data['name'], 
-                                             photo=request.FILES['photo'],  
+                new_company = models.Company(name=form.cleaned_data['name'],
+                                             photo=request.FILES['photo'],
                                              description=form.cleaned_data['description'],
                                              website=form.cleaned_data['website'])
                 new_company.save()
@@ -68,6 +68,7 @@ def joinCompany(request):
         in_company.members.add(request.user)
         in_company.save();
         request.user.company_set.add(in_company)
+        request.user.company_name = in_company
         request.user.save()
         context = {
             'company' : in_company,
@@ -75,7 +76,7 @@ def joinCompany(request):
         }
         return render(request, 'company.html', context)
     return render(request, 'autherror.html')
-    
+
 def unjoinCompany(request):
     if request.user.is_authenticated():
         in_name = request.GET.get('name', 'None')
@@ -83,6 +84,7 @@ def unjoinCompany(request):
         in_company.members.remove(request.user)
         in_company.save();
         request.user.company_set.remove(in_company)
+        request.user.company_name = None
         request.user.save()
         context = {
             'company' : in_company,
@@ -90,4 +92,3 @@ def unjoinCompany(request):
         }
         return render(request, 'company.html', context)
     return render(request, 'autherror.html')
-    
