@@ -109,8 +109,18 @@ class MyUser(AbstractBaseUser):
     # end of Professors
 
     # Engineers
-
-    
+    company_name = models.ForeignKey('CompaniesApp.Company', null=True, blank=True);
+    about = models.CharField(
+        max_length=120,
+        null=True,
+        blank=True,
+        )
+    graduated_university = models.CharField(
+        max_length=120,
+        null=True,
+        blank=True,
+        )
+    is_associated_engineers = models.BooleanField(default=False,)
     # end of Engineers
 
     is_active = models.BooleanField(default=True,)
