@@ -95,9 +95,15 @@ def get_profile(request):
 		in_name = request.POST.get('name', 'None')
 
 	if in_name == None:
-		return
+		return render(request, 'not_found.html')
 
-	profile_User = MyUser.objects.get(email__exact=in_name)
+
+	try:
+		profile_User = MyUser.objects.get(email__exact=in_name)
+	except:
+		return render(request, 'not_found.html')
+
+
 	context = {'currUser' : profile_User,}
 	if profile_User.is_professor == True:
 		if request.user.is_associated_professor == True or request.user.is_admin == True:

@@ -108,8 +108,10 @@ class MyUser(AbstractBaseUser):
     is_associated_professor = models.BooleanField(default=False,)
     # end of Professors
 
+    # Engineers
 
-
+    
+    # end of Engineers
 
     is_active = models.BooleanField(default=True,)
     is_admin = models.BooleanField(default=False,)
