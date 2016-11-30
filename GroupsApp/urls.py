@@ -10,9 +10,13 @@ urlpatterns = [
     url(r'^group/all$', views.getGroups, name='Groups'),
     url(r'^group/addMemberForm$', views.addMemberForm, name='GroupAddMember'),
     url(r'^group/AddMemberFormSuccess$', views.addMemberFormSuccess, name='GroupAddMemberSuccess'),
+    url(r'^group/deletegroupform$', views.deleteGroupForm, name='GroupDelete'),
+    url(r'^group/deletegroupformsuccess$', views.deleteGroupFormSuccess, name='GroupDeleteSuccess'),
 	url(r'^group/form$', views.getGroupForm, name='GroupForm'),
     url(r'^group/formsuccess$', views.getGroupFormSuccess, name='GroupFormSuccess'),
     url(r'^group/join$', views.joinGroup, name='GJoin'),
+    url(r'^group/setprojectform$', views.setProjectForm, name='GSetProject'),
+    url(r'^group/setprojectformsuccess$', views.setProjectFormSuccess, name='GSetProjectSuccess'),
     url(r'^group/unjoin$', views.unjoinGroup, name='GUnjoin'),
     url(r'^group$', views.getGroup, name='Group'),
 ]

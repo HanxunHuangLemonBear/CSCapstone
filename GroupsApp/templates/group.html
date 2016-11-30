@@ -9,8 +9,9 @@
 			<p>{{ group.description }}</p>
 			{% if userIsMember %}
 			<a href="/group/unjoin?name={{ group.name }}" class="btn btn-default">Unjoin this Group</a>
-			<a href="/group/addMemberForm?name={{ group.name }}" class="btn btn-default">Add member</a>
-
+			<a href="/group/addMemberForm?name={{ group.name }}" class="btn btn-default">Add Member</a>
+			<a href="/group/setprojectform?name={{ group.name }}" class="btn btn-default">Set Group Project</a>
+			<a href="/group/deletegroupform?name={{ group.name }}" class="btn btn-default">Delete Group</a>
 			{% else %}
 			<a href="/group/join?name={{ group.name }}" class="btn btn-default">Join this Group</a>
 			{% endif %}
