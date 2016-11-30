@@ -20,7 +20,7 @@
           <tr><td>Phone:</td><td><a href="tel:{{currUser.get_phone_number}}">{{currUser.get_phone_number}}</a></td></tr>
           {% if updatePermission == True %}
           <tr><td>
-            <form method="POST" action="update_handler">
+            <form method="POST" action="update_handler">{% csrf_token %}
               <input type="hidden" name="target_user" value="{{currUser}}" />
         			<input type="submit" class='btn btn-primary' value="Update">
         		</form>
