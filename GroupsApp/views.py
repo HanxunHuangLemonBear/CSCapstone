@@ -103,7 +103,6 @@ def addMemberFormSuccess(request):
             if form.is_valid():
                 in_email = form.cleaned_data['email']
                 user = models.MyUser.objects.get(email__exact=in_email)
-                #in_name = request.POST.get('name', 'None')
                 in_name = form.cleaned_data['group_name']
                 in_group = models.Group.objects.get(name__exact=in_name)
                 print(in_name)
@@ -120,17 +119,6 @@ def addMemberFormSuccess(request):
                 return render(request, 'groups.html')
     return render(request, 'autherror.html')
 
-
-def addMemberForm(request):
-    if request.user.is_authenticated():
-        in_name = request.GET.get('name', 'None')
-        in_group = models.Group.objects.get(name__exact=in_name)
-        context = {
-            'name' : in_name,
-            'group' : in_group,
-            'userIsMember': True,
-        }
-        return render(request, 'addMemberForm.html', context)
 
 def setProjectForm(request):
     if request.user.is_authenticated():
@@ -206,3 +194,34 @@ def deleteGroupFormSuccess(request):
             else:
                 return render(request, 'groups.html',context)
     return render(request, 'autherror.html')
+
+def addComment(request):
+    if request.method == 'POST':
+        form = forms.CommentForm(request.POST)
+        if form.is_valid():
+            in_name = form.cleaned_data['group_name']
+            in_group = models.Group.objects.get(name__exact=in_name)
+            new_comment = models.Comment(comment=form.cleaned_data['comment'])
+            new_comment.save()
+            comments_list = models.Comment.objects.all()
+            context = {
+                'comments' : comments_list,
+                'name' : in_name,
+                'group' : in_group,
+                'userIsMember' : True
+            }
+            return render(request, 'group.html', context)
+        else:
+            form = forms.CommentForm()
+            in_name = form.cleaned_data['group_name']
+            in_group = models.Group.objects.get(name__exact=in_name)
+            new_comment = models.Comment(comment=form.cleaned_data['comment'])
+            new_comment.save()
+            comments_list = models.Comment.objects.all()
+            context = {
+                'comments' : comments_list,
+                'name' : in_name,
+                'group' : in_group,
+                'userIsMember' : True
+            }
+    return render(request, 'group.html', context)
