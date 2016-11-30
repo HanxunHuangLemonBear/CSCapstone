@@ -139,3 +139,20 @@ def get_profile(request):
 			return render(request, 'auth_form.html', context)
 		else:
 			return render(request, 'engineers_profile.html',context)
+
+	elif profile_User.is_student == True:
+			if request.user.is_admin == True:
+				form = UpdateProfessorForm(request.POST or None, instance=profile_User)
+				if form.is_valid():
+					form.save()
+					messages.success(request, 'Success, your profile was saved!')
+
+				context = {
+					"form": form,
+					"page_name" : "Update",
+					"button_value" : "Update",
+					"links" : ["logout"],
+				}
+				return render(request, 'auth_form.html', context)
+			else:
+				return render(request, 'student_profile.html',context)

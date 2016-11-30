@@ -135,6 +135,8 @@ class MyUser(AbstractBaseUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+    def get_email(self):
+        return self.email
 
     def get_full_name(self):
         return "%s %s" %(self.first_name, self.last_name)
@@ -156,7 +158,7 @@ class MyUser(AbstractBaseUser):
 
     def get_title(self):
         return self.title
-        
+
     def get_phone_number(self):
         return self.phone_number
 
