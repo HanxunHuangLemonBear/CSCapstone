@@ -111,6 +111,19 @@ def update_handler(request):
 
 @login_required
 def get_profile(request):
+	in_name = request.GET.get('group', None)
+	if in_name != None:
+		'''
+		Paul, add your code here to get group profile
+		Add html file in templates folder
+		You can use user profile code as example
+		'''
+		return render(request, 'not_found.html')
+
+
+
+	#get user profile
+	#/profile?name=user's email address
 	in_name = request.GET.get('name', 'None')
 	if in_name == None:
 		in_name = request.POST.get('name', 'None')
@@ -124,17 +137,16 @@ def get_profile(request):
 		context = {'currUser' : profile_User, 'updatePermission' : True,}
 	else:
 		context = {'currUser' : profile_User, 'updatePermission' : False,}
-
-
 	if profile_User.is_professor == True:
+		if profile_User.is_associated_professor == True:
+			context = {'currUser' : profile_User, 'updatePermission' : True,}
 		return render(request, 'professor_profile.html',context)
-
 	elif profile_User.is_engineer == True:
+		if profile_User.is_associated_engineers == True:
+			context = {'currUser' : profile_User, 'updatePermission' : True,}
 		return render(request, 'engineers_profile.html',context)
-
 	elif profile_User.is_student == True:
 		return render(request, 'student_profile.html',context)
-
 	elif profile_User.is_admin == True:
 		return render(request, 'admin_profile.html',context)
 	else:
