@@ -7,13 +7,16 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.contrib import messages
 
 
-from .forms import LoginForm, RegisterForm, UpdateForm, UpdateProfessorForm,UpdateEngineersForm
+from .forms import LoginForm, RegisterForm, UpdateForm, UpdateProfessorForm,UpdateEngineersForm,UpdateStudentForm
 from .models import MyUser
+import logging
 
 # Auth Views
+target_user = None
 
 def auth_login(request):
 	form = LoginForm(request.POST or None)
@@ -70,15 +73,22 @@ def auth_register(request):
 
 @login_required
 def update_profile(request):
+	global target_user
+	if target_user != None :
+		request.user = target_user
+
 	if request.user.is_professor == True:
 		form = UpdateProfessorForm(request.POST or None, instance=request.user)
 	elif request.user.is_engineer == True:
 		form = UpdateEngineersForm(request.POST or None, instance=request.user)
+	elif request.user.is_student == True:
+		form = UpdateStudentForm(request.POST or None, instance=request.user)
 	else:
 		form = UpdateForm(request.POST or None, instance=request.user)
 
 	if form.is_valid():
 		form.save()
+		target_user = None
 		messages.success(request, 'Success, your profile was saved!')
 
 	context = {
@@ -91,68 +101,41 @@ def update_profile(request):
 
 
 @login_required
+def update_handler(request):
+	global target_user
+	target = request.POST.get('target_user',None);
+	target_user = MyUser.objects.get(email__exact=target)
+	logging.getLogger('django').info(target_user)
+	return redirect('/update',request)
+
+
+@login_required
 def get_profile(request):
 	in_name = request.GET.get('name', 'None')
 	if in_name == None:
 		in_name = request.POST.get('name', 'None')
-
-	if in_name == None:
-		return render(request, 'not_found.html')
-
 
 	try:
 		profile_User = MyUser.objects.get(email__exact=in_name)
 	except:
 		return render(request, 'not_found.html')
 
-	context = {'currUser' : profile_User,}
-	if profile_User.is_professor == True:
-		if request.user.is_associated_professor == True or request.user.is_admin == True:
-			form = UpdateProfessorForm(request.POST or None, instance=profile_User)
-			if form.is_valid():
-				form.save()
-				messages.success(request, 'Success, your profile was saved!')
+	if profile_User.get_email == request.user.get_email or request.user.is_admin == True:
+		context = {'currUser' : profile_User, 'updatePermission' : True,}
+	else:
+		context = {'currUser' : profile_User, 'updatePermission' : False,}
 
-			context = {
-				"form": form,
-				"page_name" : "Update",
-				"button_value" : "Update",
-				"links" : ["logout"],
-			}
-			return render(request, 'auth_form.html', context)
-		else:
-			return render(request, 'professor_profile.html',context)
+
+	if profile_User.is_professor == True:
+		return render(request, 'professor_profile.html',context)
 
 	elif profile_User.is_engineer == True:
-		if request.user.is_associated_engineers == True or request.user.is_admin == True:
-			form = UpdateProfessorForm(request.POST or None, instance=profile_User)
-			if form.is_valid():
-				form.save()
-				messages.success(request, 'Success, your profile was saved!')
-
-			context = {
-				"form": form,
-				"page_name" : "Update",
-				"button_value" : "Update",
-				"links" : ["logout"],
-			}
-			return render(request, 'auth_form.html', context)
-		else:
-			return render(request, 'engineers_profile.html',context)
+		return render(request, 'engineers_profile.html',context)
 
 	elif profile_User.is_student == True:
-			if request.user.is_admin == True:
-				form = UpdateProfessorForm(request.POST or None, instance=profile_User)
-				if form.is_valid():
-					form.save()
-					messages.success(request, 'Success, your profile was saved!')
+		return render(request, 'student_profile.html',context)
 
-				context = {
-					"form": form,
-					"page_name" : "Update",
-					"button_value" : "Update",
-					"links" : ["logout"],
-				}
-				return render(request, 'auth_form.html', context)
-			else:
-				return render(request, 'student_profile.html',context)
+	elif profile_User.is_admin == True:
+		return render(request, 'admin_profile.html',context)
+	else:
+		return render(request, 'not_found.html')
