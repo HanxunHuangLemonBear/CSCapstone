@@ -9,8 +9,9 @@
 			<p>{{ group.description }}</p>
 			{% if userIsMember %}
 			<a href="/group/unjoin?name={{ group.name }}" class="btn btn-default">Unjoin this Group</a>
-			<a href="/group/addMemberForm?name={{ group.name }}" class="btn btn-default">Add member</a>
-
+			<a href="/group/addMemberForm?name={{ group.name }}" class="btn btn-default">Add Member</a>
+			<a href="/group/setprojectform?name={{ group.name }}" class="btn btn-default">Set Group Project</a>
+			<a href="/group/deletegroupform?name={{ group.name }}" class="btn btn-default">Delete Group</a>
 			{% else %}
 			<a href="/group/join?name={{ group.name }}" class="btn btn-default">Join this Group</a>
 			{% endif %}
@@ -22,7 +23,33 @@
 			<table class="table table-striped sortable">
 				<thead>
 					<tr>
-						<th>Users</th>
+						<th>Group Project</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% if group.project == null %}
+					<tr>
+						<td>No group project set</td>
+					</tr>
+					{% else %}
+					<tr>
+						<td><a href="/project?name={{ group.project.name }}">{{ group.project.name }}</a></td>
+					</tr>
+					<tr>
+						<td>Description:</td>
+						<p>{{ group.project.description }}</p>
+					</tr>
+					<tr>
+						<td>Last updated</td>
+						<p>{{ group.project.updated_at }}</p>
+					</tr>
+					{% endif %}
+				</tbody>
+			</table>
+			<table class="table table-striped sortable">
+				<thead>
+					<tr>
+						<th>Members</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -33,20 +60,39 @@
 					{% endfor %}
 				</tbody>
 			</table>
-			<table class="table table-striped sortable">
-				<thead>
-					<tr>
-						<th>Group Project</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<!--<td>{{ group.project.name }}</td>-->
-						<!--<td><a href="/project?name={{ group.project.name }}">{{ group.project.name }}</a></td>-->
-					</tr>
-				</tbody>
-			</table>
+
 		</div>
 	</div>
-
+	<div class="container" role="main">
+	    <div class="panel panel-default">
+	        <form method="post" enctype="multipart/form-data" action="group/addcomment" class="panel-body validate">
+	        {% csrf_token %}
+	             <label for="comment">Add Comment</label>
+							 <input type="hidden" name="group_name" id="group_name" placeholder="{{group.name}}" value="{{ group.name }}" readonly/>
+	             <input type="text" name="comment" id="comment" placeholder="Comment" class="form-control" data-bvalidator="required" data-bvalidator-msg="Comment Required">
+							 <br>
+	             <input type="submit" value="Submit" class="btn btn-primary">
+	        </form>
+	    </div>
+	</div>
+	<div class="container" role="main">
+		<div class="table-responsive">
+	    <table class="table table-striped sortable">
+	         <thead>
+	            <tr>
+	                <th style="width: 20%">Time</th>
+	                 <th style="width: 80%">Comment</th>
+	            </tr>
+	         </thead>
+	         <tbody>
+	            {% for item in comments %}
+	            <tr>
+	                <td>{{ item.time }}</td>
+	                <td>{{ item.comment }}</td>
+	            </tr>
+	            {% endfor %}
+	        </tbody>
+	    </table>
+		</div>
+	</div>
 {% endblock %}

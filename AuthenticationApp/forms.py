@@ -62,14 +62,10 @@ class UpdateForm(forms.ModelForm):
     class Meta:
         model = MyUser
         #logging.getLogger('console').error("error")
-        fields = ('email', 'first_name', 'last_name',
-                'is_student', 'is_professor', 'is_engineer')
+        fields = ('email', 'first_name', 'last_name','phone_number')
 
     def clean_password(self):
         return self.initial["password"]
-
-
-
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
@@ -293,7 +289,82 @@ class UpdateEngineersForm(forms.ModelForm):
             raise forms.ValidationError("User cannot be Professor and Enginner at the same time!")
 
 
+class UpdateStudentForm(forms.ModelForm):
+    """A form for updating users. Includes all the fields on
+    the user, but replaces the password field with admin's
+    password hash display field.
+    """
 
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(UpdateStudentForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = MyUser
+        #logging.getLogger('console').error("error")
+        fields = ('email', 'first_name', 'last_name','university_name','phone_number')
+        widgets = {'university_name': forms.widgets.Select(attrs={'readonly': True,'disabled': True})}
+
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        #Check is email has changed
+        if email == self.initial["email"]:
+            return email
+        #Check if email exists before
+        try:
+            exists = MyUser.objects.get(email=email)
+            raise forms.ValidationError("This email has already been taken")
+        except MyUser.DoesNotExist:
+            return email
+        except:
+            raise forms.ValidationError("There was an error, please contact us later")
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get("first_name")
+        #Check is email has changed
+        if first_name is None or first_name == "" or first_name == '':
+            email = self.cleaned_data.get("email")
+            return email[:email.find("@")]
+        return first_name
+
+    def university_name(self):
+        university_name = self.cleaned_data.get("university_name")
+        return university_name
+
+    def clean_is_student(self):
+        is_student = self.cleaned_data.get("is_student")
+        if is_student is not True:
+            return False
+        return True
+
+    def clean_is_professor(self):
+        is_professor = self.cleaned_data.get("is_professor")
+        if is_professor is not True:
+            return False
+        return True
+
+    def clean_is_engineer(self):
+        is_engineer = self.cleaned_data.get("is_engineer")
+        if is_engineer is not True:
+            return False
+        return True
+
+
+
+    def clean(self):
+        is_student = self.cleaned_data.get("is_student")
+        is_professor = self.cleaned_data.get("is_professor")
+        is_engineer = self.cleaned_data.get("is_engineer")
+        #Classify the Users as Students, Professors, Engineers
+        if is_student == True and is_professor == True and is_engineer == True:
+            raise forms.ValidationError("User cannot be Student, Professor and Enginner at the same time!")
+        elif is_student == True and is_engineer == True:
+            raise forms.ValidationError("User cannot be Student and Enginner at the same time!")
+        elif is_student == True and is_professor == True:
+            raise forms.ValidationError("User cannot be Student and Professor at the same time!")
+        elif is_engineer == True and is_professor == True:
+            raise forms.ValidationError("User cannot be Professor and Enginner at the same time!")
 
 
 

@@ -8,13 +8,12 @@
 			<table class="table">
 				<thead>
 					<tr>
-						<th>Welcome, Student {{currUser.get_short_name}} </th>
+						<th>Welcome, Admin {{currUser.get_short_name}} </th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr><td>First Name:</td><td>{{currUser.get_first_name}}</td></tr>
           <tr><td>Last Name:</td><td>{{currUser.get_last_name}}</td></tr>
-          <tr><td>University:</td><td>{{currUser.get_university_name}}</td></tr>
           <tr><td>Email:</td><td><a href="mailto:{{currUser.get_email}}">{{currUser.get_email}}</a></td></tr>
           <tr><td>Phone:</td><td><a href="tel:{{currUser.get_phone_number}}">{{currUser.get_phone_number}}</a></td></tr>
           {% if updatePermission == True %}

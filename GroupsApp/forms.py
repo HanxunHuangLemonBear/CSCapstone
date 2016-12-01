@@ -12,3 +12,15 @@ class GroupForm(forms.Form):
 class AddMemberForm(forms.Form):
     email = forms.CharField(label='Email', max_length=30)
     group_name = forms.CharField(label='GroupName', max_length=30)
+
+class SetGroupProjectForm(forms.Form):
+    name = forms.CharField(label="Name", max_length=30)
+    group_name = forms.CharField(label='GroupName', max_length=30)
+
+class DeleteGroupForm(forms.Form):
+    confirm = forms.CharField(label="Confirm", max_length=30)
+    group_name = forms.CharField(label='GroupName', max_length=30)
+
+class CommentForm(forms.Form):
+    group_name = forms.CharField(label='GroupName', max_length=30)
+    comment = forms.CharField(label='Text', max_length=500)
