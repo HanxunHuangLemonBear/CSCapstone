@@ -23,4 +23,4 @@ class DeleteGroupForm(forms.Form):
 
 class CommentForm(forms.Form):
     group_name = forms.CharField(label='GroupName', max_length=30)
-    comment = forms.CharField(label='Text', max_length=500)
+    description = forms.CharField(label='Text', max_length=500)

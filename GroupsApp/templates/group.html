@@ -68,9 +68,9 @@
 	        <form method="post" enctype="multipart/form-data" action="group/addcomment" class="panel-body validate">
 	        {% csrf_token %}
 	             <label for="comment">Add Comment</label>
-							 <input type="hidden" name="group_name" id="group_name" placeholder="{{group.name}}" value="{{ group.name }}" readonly/>
-	             <input type="text" name="comment" id="comment" placeholder="Comment" class="form-control" data-bvalidator="required" data-bvalidator-msg="Comment Required">
-							 <br>
+	             <input type="hidden" name="group_name" id="group_name" placeholder="{{group.name}}" value="{{ group.name }}" readonly/>
+		     <textarea type="text" name="description" id="description" placeholder="Comment" class="form-control" data-bvalidator="required" data-bvalidator-msg="Comment Required"></textarea>
+		     <br>
 	             <input type="submit" value="Submit" class="btn btn-primary">
 	        </form>
 	    </div>
@@ -88,7 +88,7 @@
 	            {% for item in comments %}
 	            <tr>
 	                <td>{{ item.time }}</td>
-	                <td>{{ item.comment }}</td>
+	                <td>{{ item.comment|safe }}</td>
 	            </tr>
 	            {% endfor %}
 	        </tbody>
