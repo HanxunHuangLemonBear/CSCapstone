@@ -11,6 +11,10 @@ class Group(models.Model):
     description = models.CharField(max_length=300)
     members = models.ManyToManyField(MyUser)
     project_name = models.ForeignKey('ProjectsApp.Project', null=True, blank=True)
-    
+
     def __str__(self):
         return self.name
+
+class Comment(models.Model):
+    time = models.DateTimeField(auto_now=True)
+    comment = models.CharField(max_length=500)

@@ -21,7 +21,9 @@ def getGroup(request):
         in_name = request.GET.get('name', 'None')
         in_group = models.Group.objects.get(name__exact=in_name)
         is_member = in_group.members.filter(email__exact=request.user.email)
+        comments_list = models.Comment.objects.all()
         context = {
+            'comments' : comments_list,
             'group' : in_group,
             'userIsMember': is_member,
         }

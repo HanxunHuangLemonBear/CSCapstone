@@ -55,7 +55,7 @@
 				<tbody>
 					{% for item in group.members.all %}
 					<tr>
-						<td>{{ item.get_full_name }}</td>
+						<td><a href="/profile?name={{ item.get_email }}">{{ item.get_full_name }}</a></td>
 					</tr>
 					{% endfor %}
 				</tbody>
