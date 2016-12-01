@@ -63,6 +63,7 @@
 
 		</div>
 	</div>
+	{% if userIsMember %}
 	<div class="container" role="main">
 	    <div class="panel panel-default">
 	        <form method="post" enctype="multipart/form-data" action="group/addcomment" class="panel-body validate">
@@ -97,4 +98,5 @@
 	    </table>
 		</div>
 	</div>
+	{% endif %}
 {% endblock %}

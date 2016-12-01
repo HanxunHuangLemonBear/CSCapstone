@@ -67,7 +67,9 @@ def joinGroup(request):
         request.user.group_set.add(in_group)
         request.user.save()
         in_user = request.user
+        comments_list = models.Comment.objects.all()
         context = {
+            'comments' : comments_list,
             'user' : in_user,
             'group' : in_group,
             'userIsMember': True,
@@ -119,7 +121,9 @@ def addMemberFormSuccess(request):
                 user.group_set.add(in_group)
                 user.save()
                 in_user = request.user
+                comments_list = models.Comment.objects.all()
                 context = {
+                    'comments' : comments_list,
                     'user' : in_user,
                     'group' : in_group,
                     'userIsMember' : True
@@ -153,7 +157,9 @@ def setProjectFormSuccess(request):
                 in_group.project.add(in_project)
                 in_group.save();
                 in_user = request.user
+                comments_list = models.Comment.objects.all()
                 context = {
+                    'comments' : comments_list,
                     'user' : in_user,
                     'group' : in_group,
                     'userIsMember' : True
