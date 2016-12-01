@@ -21,8 +21,10 @@ def getGroup(request):
         in_name = request.GET.get('name', 'None')
         in_group = models.Group.objects.get(name__exact=in_name)
         is_member = in_group.members.filter(email__exact=request.user.email)
+        in_user = request.user
         comments_list = models.Comment.objects.all()
         context = {
+            'user' : in_user,
             'comments' : comments_list,
             'group' : in_group,
             'userIsMember': is_member,
@@ -64,7 +66,9 @@ def joinGroup(request):
         in_group.save();
         request.user.group_set.add(in_group)
         request.user.save()
+        in_user = request.user
         context = {
+            'user' : in_user,
             'group' : in_group,
             'userIsMember': True,
         }
@@ -79,7 +83,9 @@ def unjoinGroup(request):
         in_group.save();
         request.user.group_set.remove(in_group)
         request.user.save()
+        in_user = request.user
         context = {
+            'user' : in_user,
             'group' : in_group,
             'userIsMember': False,
         }
@@ -112,7 +118,9 @@ def addMemberFormSuccess(request):
                 in_group.save();
                 user.group_set.add(in_group)
                 user.save()
+                in_user = request.user
                 context = {
+                    'user' : in_user,
                     'group' : in_group,
                     'userIsMember' : True
                 }
@@ -144,7 +152,9 @@ def setProjectFormSuccess(request):
                 in_group = models.Group.objects.get(name__exact=in_name)
                 in_group.project.add(in_project)
                 in_group.save();
+                in_user = request.user
                 context = {
+                    'user' : in_user,
                     'group' : in_group,
                     'userIsMember' : True
                 }
@@ -186,7 +196,9 @@ def deleteGroupFormSuccess(request):
                         in_group.delete()
                     return render(request, 'groups.html', context)
                 else:
+                    in_user = request.user
                     context = {
+                        'user' : in_user,
                         'name' : in_name,
                         'group' : in_group,
                         'userIsMember' : True
@@ -203,10 +215,12 @@ def addComment(request):
         if form.is_valid():
             in_name = form.cleaned_data['group_name']
             in_group = models.Group.objects.get(name__exact=in_name)
-            new_comment = models.Comment(comment=form.cleaned_data['comment'])
+            new_comment = models.Comment(comment=form.cleaned_data['comment'], user = request.user)
             new_comment.save()
             comments_list = models.Comment.objects.all()
+            in_user = request.user
             context = {
+                'user' : in_user,
                 'comments' : comments_list,
                 'name' : in_name,
                 'group' : in_group,
@@ -220,7 +234,9 @@ def addComment(request):
             new_comment = models.Comment(comment=form.cleaned_data['comment'])
             new_comment.save()
             comments_list = models.Comment.objects.all()
+            in_user = request.user
             context = {
+                'user' : in_user,
                 'comments' : comments_list,
                 'name' : in_name,
                 'group' : in_group,
