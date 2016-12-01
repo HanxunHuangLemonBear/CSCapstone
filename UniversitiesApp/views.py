@@ -9,6 +9,7 @@ from . import models
 from . import forms
 import datetime
 
+
 def isProfessor():
     latest_login = models.MyUser.objects.all().aggregate(Max('last_login'))
     dt = latest_login['last_login__max']
@@ -122,7 +123,7 @@ def joinUniversity(request):
             'university' : in_university,
             'userIsMember': True,
         }
-        if (request.user.is_Professor):
+        if (request.user.is_professor):
             return render(request, 'university.html', context)
         else:
             return render(request, 'universityStudent.html', context)

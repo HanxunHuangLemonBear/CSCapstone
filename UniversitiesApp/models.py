@@ -5,6 +5,7 @@ Created by Jacob Dunbar on 11/5/2016.
 """
 from django.db import models
 from AuthenticationApp.models import MyUser
+from tinymce.models import HTMLField
 
 # Create your models here.
 class University(models.Model):
@@ -14,7 +15,25 @@ class University(models.Model):
     website=models.CharField(max_length=300, default="/")
     members = models.ManyToManyField(MyUser)
 
+    def get_name(self):
+        return self.name
+
+    def get_photo(self):
+        return self.photo
+
+    def get_desc(self):
+        return self.description
+
+    def get_web(self):
+        return self.website
+
+    def get_members(self):
+        return self.members
+
     def __str__(self):
+        return self.name
+
+    def __unicode__(self):
         return self.name
 
 class Course(models.Model):

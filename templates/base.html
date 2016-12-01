@@ -15,7 +15,7 @@
 
 	<!-- BValidator -->
 	<link href="{% static "css/bvalidator.css" %}" rel="stylesheet" type="text/css">
-	
+
 	<!-- jQuery UI -->
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	
@@ -54,4 +54,16 @@
 
 	<!-- Site JS -->
 	<script type="text/javascript" src="{% static "js/site.js" %}"></script>
+	
+	<script src="{% static "js/tinymce/tinymce.min.js" %}"></script>
+
+	<script>
+	tinymce.init({
+		selector: '#description',
+		height: 200,
+		theme: 'modern',
+		plugins: 'textcolor colorpicker',
+		toolbar: 'forecolor backcolor'
+	});
+	</script>
 </body></html>
