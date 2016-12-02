@@ -31,5 +31,31 @@ class Project(models.Model):
         self.owner = owner
         self.company = company
         self.save()
-        #new_project.save()
         return
+
+    def get_name(self):
+        return self.name
+
+    def get_description(self):
+        return self.description
+
+    def get_created_at(self):
+        return self.created_at
+
+    def get_updated_at(self):
+        return self.updated_at
+
+    def get_owner(self):
+        return self.owner
+
+    def get_company(self):
+        return self.company
+
+    def get_programmingLanguage(self):
+        return self.programmingLanguage
+
+    def get_yearsOfExperience(self):
+        return self.yearsOfExperience
+
+    def get_speciality(self):
+        return self.speciality

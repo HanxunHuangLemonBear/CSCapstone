@@ -20,7 +20,15 @@ def getProjects(request):
     })
 
 def getProject(request):
-	return render(request, 'project.html')
+	project_name = request.GET.get("name",None)
+	if project_name == None:
+		return render(request, 'not_found.html')
+	try:
+		currProject = models.Project.objects.get(name__exact=project_name)
+		context = {'currProject' : currProject}
+		return render(request, 'project.html',context)
+	except:
+		return render(request, 'not_found.html')
 
 def getProjectForm(request):
 	if request.user.is_authenticated():
