@@ -1,7 +1,7 @@
 {% extends "body.html" %}
 
 {% block content %}
-	
+
 	<!-- Content -->
 	<div class="container theme-showcase" role="main">
 		<div class="jumbotron">
@@ -9,5 +9,37 @@
 			<p>Description</p>
 		</div>
 	</div>
+
+	<div class="container" role="main">
+	<div class="table-responsive">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Welcome, Engineer {{currUser.get_short_name}} </th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td>First Name:</td><td>{{currUser.get_first_name}}</td></tr>
+				<tr><td>Last Name:</td><td>{{currUser.get_last_name}}</td></tr>
+				<tr><td>Company:</td><td>{{currUser.get_company_name}}</td></tr>
+				<tr><td>Alma Mater:</td><td>{{currUser.get_graduated_university}}</td></tr>
+				<tr><td>Title:</td><td>{{currUser.get_title}}</td></tr>
+				<tr><td>Office:</td><td>{{currUser.get_office}}</td></tr>
+				<tr><td>Phone:</td><td><a href="tel:{{currUser.get_phone_number}}">{{currUser.get_phone_number}}</a></td></tr>
+				<tr><td>About:</td><td>{{currUser.get_about}}</td></tr>
+				{% if updatePermission == True %}
+				<tr><td>
+					<form method="POST" action="update_handler">{% csrf_token %}
+						<input type="hidden" name="target_user" value="{{currUser}}" />
+						<input type="submit" class='btn btn-primary' value="Update">
+					</form>
+					</td><td></td></tr>
+				{% endif %}
+			</tbody>
+		</table>
+	</div>
+
+
+
 
 {% endblock %}

@@ -12,6 +12,7 @@ class ProjectForm(forms.Form):
     programmingLanguage = forms.CharField(label='programmingLanguage', max_length = 300)
     speciality = forms.CharField(label='speciality', max_length = 300)
     yearsOfExperience = forms.CharField(label='speciality', max_length = 300)
+
     class Meta:
         model = Project
         fields = ('name', 'programmingLanguage', 'description', 'speciality','yearsOfExperience')

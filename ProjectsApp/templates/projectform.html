@@ -7,6 +7,8 @@
 			<h3 style="margin: 0px; padding: 0px;">Create Project</h3>
 		</div>
 		<div class="panel panel-default">
+			<h4 style="color:red">{{ user_error }}</h4>
+			{% if not user_error %}
 			<form method="post" enctype="multipart/form-data" action="/project/formsuccess" class="panel-body validate">{% csrf_token %}
 				<label for="name">Name</label>
         <h6 style="color:red">{{ error }}</h6>
@@ -32,6 +34,7 @@
 
 				<input type="submit" value="Submit" class="btn btn-primary">
 			</form>
+			{% endif %}
 		</div>
     </div>
 {% endblock %}

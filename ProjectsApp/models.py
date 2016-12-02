@@ -4,6 +4,7 @@ Created by Harris Christiansen on 10/02/16.
 """
 from django.db import models
 import logging
+import datetime
 
 class Project(models.Model):
     name = models.CharField(max_length=200)
@@ -19,12 +20,16 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
-    def create_project(self, name=None, description=None, programmingLanguage=None, yearsOfExperience=None, speciality=None):
+    def create_project(self, name=None, description=None, programmingLanguage=None, yearsOfExperience=None, speciality=None, owner=None, company=None):
         if not name:
             return ValueError('Project has to have a name')
         logging.getLogger('django').info("here")
-        new_project = self.model(name=name)
-        new_project.description = description
-        new_project.created_at = datetime.now()
+        self.name = name
+        self.description = description
+        self.created_at = datetime.datetime.now()
+        self.updated_at = datetime.datetime.now()
+        self.owner = owner
+        self.company = company
+        self.save()
         #new_project.save()
         return
