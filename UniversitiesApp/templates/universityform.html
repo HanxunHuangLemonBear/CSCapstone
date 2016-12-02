@@ -14,13 +14,13 @@
 				<input type="text" name="name" id="name" placeholder="Name" class="form-control" data-bvalidator="required" data-bvalidator-msg="Name Required">
 				<br>
                 <label for="photo">Upload a Photo</label>
-                <input type="file" name="photo" />
+                <input type="file" name="photo" required/>
                 <br>
 				<label for="description">University Description</label>
 				<textarea name="description" id="description" placeholder="Description" class="form-control" data-bvalidator="required" data-bvalidator-msg="Description Required"></textarea>
 				<br>
                 <label for="website">Website</label>
-				<input type="text" name="website" id="website" placeholder="Website" class="form-control">
+		<input type="text" name="website" id="website" placeholder="Website" class="form-control" data-bvalidator="required" data-bvalidator-msg="Website Required"></textarea>
 				<br>
 				<input type="submit" value="Submit" class="btn btn-primary">
 			</form>
