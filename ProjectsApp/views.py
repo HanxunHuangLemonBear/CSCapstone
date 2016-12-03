@@ -86,3 +86,40 @@ def delete_handler(request):
 	currProject.delete()
 	context = {'name' : currProject_name}
 	return render(request, 'projectdeleteformsuccess.html',context)
+
+
+def update_handler(request):
+	currProject_name = request.POST.get('target_project',None)
+	try:
+		currProject = models.Project.objects.get(name__exact=currProject_name)
+	except:
+		return render(request, 'not_found.html')
+
+	if request.user.is_admin == False and request.user != currProject.owner:
+		context = {'error' : "You do not have no permission to delete this project",'is_error':True,'currProject':currProject}
+		return render(request, 'project.html',context)
+	context = {'currProject' : currProject}
+	form = forms.ProjectForm(request.POST)
+	context.update({'form':form})
+	return render(request, 'updateform.html',context)
+
+def update(request):
+	if request.method == 'POST':
+		form = forms.ProjectForm(request.POST, request.FILES)
+		if form.is_valid():
+			logging.getLogger('django').info(request.user)
+			try:
+				currProject = models.Project.objects.get(name__exact=form.cleaned_data['name'])
+			except:
+				return render(request, 'not_found.html')
+			currProject.programmingLanguage = form.cleaned_data['programmingLanguage']
+			currProject.yearsOfExperience = form.cleaned_data['yearsOfExperience']
+			currProject.speciality = form.cleaned_data['speciality']
+			currProject.description = form.cleaned_data['description']
+			currProject.save()
+			context = {'name' : form.cleaned_data['name'],}
+			return render(request, 'projectformsuccess.html', context)
+	else:
+		#logging.getLogger('django').info(request.user)
+		form = forms.ProjectForm()
+	return render(request, 'updateform.html')

@@ -1,0 +1,40 @@
+{% extends "body.html" %}
+
+{% block content %}
+	<!-- Content -->
+	<div class="container" role="main">
+		<div class="jumbotron">
+			<h3 style="margin: 0px; padding: 0px;">Update Project</h3>
+		</div>
+		<div class="panel panel-default">
+			<h4 style="color:red">{{ user_error }}</h4>
+			{% if not user_error %}
+			<form method="post" enctype="multipart/form-data" action="/project/update_handler" class="panel-body validate">{% csrf_token %}
+				<label for="name">Name</label>
+        <h6 style="color:red">{{ error }}</h6>
+				<input disabled value="{{currProject.get_name}}" type="text" name="name" id="name" placeholder="Name" class="form-control" data-bvalidator="required" data-bvalidator-msg="Name Required">
+				<br>
+
+				<label for="Programming Language">Programming Language</label>
+					<input>{{form.programmingLanguage}}</input>
+
+				<br>
+
+				<label for="Years of Experience">Years of Experience</label>
+				<input value="{{currProject.get_company}}"type="text" name="yearsOfExperience" id="yearsOfExperience" placeholder="" class="form-control">
+				<br>
+
+				<label for="Speciality">Speciality</label>
+				<input value="{{currProject.get_speciality}}"type="text" name="speciality" id="speciality" placeholder="" class="form-control">
+				<br>
+
+				<label for="Project Description">Project Description</label>
+				<textarea name="description" id="description" placeholder="Description" class="form-control" data-bvalidator="required" data-bvalidator-msg="Description Required"></textarea>
+				<br>
+
+				<input type="submit" value="Update" class="btn btn-primary">
+			</form>
+			{% endif %}
+		</div>
+    </div>
+{% endblock %}
