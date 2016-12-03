@@ -5,12 +5,18 @@
 	<!-- Content -->
 	<div class="container theme-showcase" role="main">
 		<div class="jumbotron">
-			<h1>{{currProject.get_name}}</h1>
+
+			{% if is_error == True %}
+				<h4 style="color:red"> {{error}} </h4>
+			{% endif %}
+			<h1>Project: {{currProject.get_name}}</h1>
+
 			<table class="table">
 				<thead>
 					<tr>
 						<th>Project details </th>
 					</tr>
+
 				</thead>
 
 				<tbody>
@@ -22,22 +28,27 @@
 					<tr><td>Years Of Experience required:</td><td>{{currProject.get_yearsOfExperience}}</td></tr>
 					<tr><td>Speciality:</td><td>{{currProject.get_speciality}}</td></tr>
 					<tr><td>
-						<p> Project description:<br>
-							{{currProject.get_description}}
-						</p>
+						{{ currProject.get_description | safe }}
 					</td><td></td></tr>
 
 					{% if updatePermission == True %}
-					<tr><td>
-						<form method="POST" action="update_handler">{% csrf_token %}
+						<form method="POST" action="/project/update_handler">{% csrf_token %}
 							<input type="hidden" name="target_user" value="{{currUser}}" />
-							<input type="submit" class='btn btn-primary' value="Update">
+							<input type="submit" class='btn btn-primary' value="Update this project">
 						</form>
-						</td><td></td></tr>
 					{% endif %}
+
+					{% if deletePermission == True %}
+						<form method="POST" action="/project/delete_handler">{% csrf_token %}
+							<input type="hidden" name="target_project" value="{{currProject.get_name}}" />
+							<input type="submit" class='btn btn-danger' value="Delete this project">
+						</form>
+					{% endif %}
+
 				</tbody>
 
 				</table>
 		</div>
 	</div>
+
 {% endblock %}

@@ -7,7 +7,7 @@ from django.db.models import Max
 from . import models
 from . import forms
 import datetime
-
+import logging
 from .models import Project
 from .forms import ProjectForm
 from AuthenticationApp.models import MyUser
@@ -26,6 +26,10 @@ def getProject(request):
 	try:
 		currProject = models.Project.objects.get(name__exact=project_name)
 		context = {'currProject' : currProject}
+		if request.user.is_admin == True or request.user == currProject.owner or request.user.company_name == currProject.company:
+			context.update({'deletePermission' : True})
+		if request.user == currProject.owner:
+			context.update({'updatePermission' : True})
 		return render(request, 'project.html',context)
 	except:
 		return render(request, 'not_found.html')
@@ -64,3 +68,21 @@ def getProjectFormSuccess(request):
 		else:
 			form = forms.ProjectForm()
 	return render(request, 'projectform.html')
+
+
+
+def delete_handler(request):
+	currProject_name = request.POST.get('target_project',None)
+	try:
+		currProject = models.Project.objects.get(name__exact=currProject_name)
+	except:
+		return render(request, 'not_found.html')
+
+
+	if request.user.is_admin == False and request.user != currProject.owner and request.user.company_name != currProject.company:
+		context = {'error' : "You do not have no permission to delete this project",'is_error':True,'currProject':currProject}
+		return render(request, 'project.html',context)
+
+	currProject.delete()
+	context = {'name' : currProject_name}
+	return render(request, 'projectdeleteformsuccess.html',context)
