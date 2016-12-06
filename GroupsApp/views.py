@@ -154,10 +154,12 @@ def setProjectFormSuccess(request):
                 in_project = models.Project.objects.get(name__exact=in_projectname)
                 in_name = form.cleaned_data['group_name']
                 in_group = models.Group.objects.get(name__exact=in_name)
-                in_group.project.add(in_project)
+                # in_group.project.add(in_project)
+                in_group.project_name = in_project
                 in_group.save();
                 in_user = request.user
                 comments_list = models.Comment.objects.all()
+                print("\nproject\n")
                 context = {
                     'comments' : comments_list,
                     'user' : in_user,
@@ -166,7 +168,11 @@ def setProjectFormSuccess(request):
                 }
                 return render(request, 'group.html', context)
             else:
-                return render(request, 'groups.html')
+                groups_list = models.Group.objects.all()
+                context = {
+                    'groups' : groups_list,
+                }
+                return render(request, 'groups.html', context)
     return render(request, 'autherror.html')
 
 def deleteGroupForm(request):

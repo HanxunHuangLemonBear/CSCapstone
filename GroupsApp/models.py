@@ -4,6 +4,7 @@ Created by Naman Patwari on 10/10/2016.
 """
 from django.db import models
 from AuthenticationApp.models import MyUser
+from ProjectsApp.models import Project
 
 # Create your models here.
 class Group(models.Model):

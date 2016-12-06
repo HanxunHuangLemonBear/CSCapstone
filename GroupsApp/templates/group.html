@@ -6,7 +6,7 @@
 	<div class="container theme-showcase" role="main">
 		<div class="jumbotron">
 			<h1>{{ group.name }}</h1>
-			<p>{{ group.description }}</p>
+			{{ group.description | safe }}
 			{% if userIsMember %}
 			<a href="/group/unjoin?name={{ group.name }}" class="btn btn-default">Unjoin this Group</a>
 			<a href="/group/addMemberForm?name={{ group.name }}" class="btn btn-default">Add Member</a>
@@ -27,21 +27,19 @@
 					</tr>
 				</thead>
 				<tbody>
-					{% if group.project == null %}
+					{% if group.project_name == null %}
 					<tr>
 						<td>No group project set</td>
 					</tr>
 					{% else %}
 					<tr>
-						<td><a href="/project?name={{ group.project.name }}">{{ group.project.name }}</a></td>
+						<td><a href="/project?name={{ group.project_name }}">{{ group.project_name }}</a></td>
 					</tr>
 					<tr>
-						<td>Description:</td>
-						<p>{{ group.project.description }}</p>
+						<td>Description: {{ group.project_name.description | safe }}</td>
 					</tr>
 					<tr>
-						<td>Last updated</td>
-						<p>{{ group.project.updated_at }}</p>
+						<td>Last updated: {{ group.project_name.updated_at | safe }}</td>
 					</tr>
 					{% endif %}
 				</tbody>
@@ -66,7 +64,7 @@
 	{% if userIsMember %}
 	<div class="container" role="main">
 	    <div class="panel panel-default">
-	        <form method="post" enctype="multipart/form-data" action="group/addcomment" class="panel-body validate">
+	        <form method="post" enctype="multipart/form-data" action="addcomment" class="panel-body validate">
 	        {% csrf_token %}
 	             <label for="comment">Add Comment</label>
 	             <input type="hidden" name="group_name" id="group_name" placeholder="{{group.name}}" value="{{ group.name }}" readonly/>
@@ -91,7 +89,7 @@
 	            <tr>
 	                <td>{{ item.time }}</td>
 	                <td>{{ item.comment|safe }}</td>
-			<td>{{ item.comment.user.get_full_name }}</td>
+									<td>{{ item.comment.user.get_full_name }}</td>
 	            </tr>
 	            {% endfor %}
 	        </tbody>

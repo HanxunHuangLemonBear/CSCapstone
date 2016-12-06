@@ -14,7 +14,7 @@ class AddMemberForm(forms.Form):
     group_name = forms.CharField(label='GroupName', max_length=30)
 
 class SetGroupProjectForm(forms.Form):
-    name = forms.CharField(label="Name", max_length=30)
+    project_name = forms.CharField(label="Name", max_length=30)
     group_name = forms.CharField(label='GroupName', max_length=30)
 
 class DeleteGroupForm(forms.Form):
