@@ -130,7 +130,7 @@ class MyUser(AbstractBaseUser):
     is_student = models.BooleanField(default=False,)
     is_professor = models.BooleanField(default=False,)
     is_engineer = models.BooleanField(default=False,)
-
+    
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'

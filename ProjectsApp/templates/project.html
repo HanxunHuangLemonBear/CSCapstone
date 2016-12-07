@@ -10,7 +10,11 @@
 				<h4 style="color:red"> {{error}} </h4>
 			{% endif %}
 			<h1>Project: {{currProject.get_name}}</h1>
-
+			{% if isBookmark == False %}
+			<a href="/project/bookmark?pname={{currProject.get_name}}" class="btn btn-default"> Create Bookmark</a>
+			{% else %}
+			<a href="/project/bookmark/remove?pname={{currProject.get_name}}" class="btn btn-default"> Remove Bookmark</a>
+			{% endif %}
 			<table class="table">
 				<thead>
 					<tr>

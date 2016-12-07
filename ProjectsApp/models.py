@@ -5,18 +5,19 @@ Created by Harris Christiansen on 10/02/16.
 from django.db import models
 import logging
 import datetime
+from AuthenticationApp.models import MyUser
 
 class Project(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=10000)
     created_at = models.DateTimeField('date created')
     updated_at = models.DateTimeField('date updated')
-    owner =  models.ForeignKey('AuthenticationApp.MyUser', null=True, blank=True)
+    owner =  models.ForeignKey('AuthenticationApp.MyUser', related_name='Engineer', null=True, blank=True)
     company = models.ForeignKey('CompaniesApp.Company', null=True, blank=True)
     programmingLanguage = models.CharField(max_length=200,null=True, blank=True)
     yearsOfExperience = models.CharField(max_length=200,null=True, blank=True)
     speciality = models.CharField(max_length=200,null=True, blank=True)
-
+    bookers = models.ManyToManyField(MyUser)
     def __str__(self):
         return self.name
 
@@ -59,3 +60,12 @@ class Project(models.Model):
 
     def get_speciality(self):
         return self.speciality
+
+    def get_members(self):
+        return self.members
+
+    def __self__(self):
+        return self.name
+
+    def __unicode(self):
+        return self.name
