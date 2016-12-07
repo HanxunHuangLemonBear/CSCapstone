@@ -37,7 +37,7 @@ def getUniversity(request):
             'university' : in_university,
             'userIsMember': is_member,
         }
-        if isProfessor():
+        if request.user.is_professor:
             return render(request, 'university.html', context)
         else:
             return render(request, 'universityStudent.html', context)
