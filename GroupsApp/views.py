@@ -85,7 +85,7 @@ def getGroup(request):
         in_group = models.Group.objects.get(name__exact=in_name)
         is_member = in_group.members.filter(email__exact=request.user.email)
         in_user = request.user
-        comments_list = models.Comment.objects.all()
+        comments_list = models.Comment.objects.all().filter(group=in_group)
         tags = projectTag.objects.all()
         suggested_project = projectsMatching(group=in_group)
         context = {
@@ -225,7 +225,7 @@ def setProjectFormSuccess(request):
                 in_group.project_name = in_project
                 in_group.save();
                 in_user = request.user
-                comments_list = models.Comment.objects.all()
+                comments_list = models.Comment.objects.all().filter(group=in_group)
                 print("\nproject\n")
                 context = {
                     'comments' : comments_list,
@@ -315,7 +315,7 @@ def addComment(request):
             #in_name = form.cleaned_data['group_name']
             in_name = request.POST.get('name', 'None')
             in_group = models.Group.objects.get(name__exact=in_name)
-            comments_list = models.Comment.objects.all()
+            comments_list = models.Comment.objects.all().filter(group=in_group)
             in_user = request.user
             context = {
                 'user' : in_user,
@@ -324,4 +324,5 @@ def addComment(request):
                 'group' : in_group,
                 'userIsMember' : True
             }
+            print("failed")
     return render(request, 'group.html', context)

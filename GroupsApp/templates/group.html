@@ -126,7 +126,7 @@
 	{% if userIsMember %}
 	<div class="container" role="main">
 	    <div class="panel panel-default">
-	        <form method="post" enctype="multipart/form-data" action="addcomment" class="panel-body validate">
+	        <form method="post" enctype="multipart/form-data" action="group/addcomment" class="panel-body validate">
 	        {% csrf_token %}
 	             <label for="comment">Add Comment</label>
 	             <input type="hidden" name="group_name" id="group_name" placeholder="{{group.name}}" value="{{ group.name }}" readonly/>
