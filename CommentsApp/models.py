@@ -4,6 +4,7 @@ from AuthenticationApp.models import MyUser
 
 # Create your models here.
 class Comment(models.Model):
+    id = models.CharField(max_length=10)
     time = models.DateTimeField(auto_now=True)
     comment = models.CharField(max_length=500)
     group = models.ForeignKey('GroupsApp.Group', null=True, blank=True)

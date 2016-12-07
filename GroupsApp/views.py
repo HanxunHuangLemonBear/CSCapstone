@@ -8,6 +8,9 @@ from . import forms
 from ProjectsApp.models import projectTag
 from ProjectsApp.models import Project
 from collections import Counter
+import random
+import string
+
 def getGroups(request):
     if request.user.is_authenticated():
         groups_list = models.Group.objects.all()
@@ -296,20 +299,23 @@ def deleteGroupFormSuccess(request):
                 return render(request, 'groups.html',context)
     return render(request, 'autherror.html')
 
+def commentIDgenerator():
+    token = ""
+    for i in range(10):
+        token = token + random.choice(string.ascii_letters)
+    return token
+
+
 def addComment(request):
     if request.method == 'POST':
         form = forms.CommentForm(request.POST)
-        # = request.POST.get('name', 'None')
+        in_user = request.user
         if form.is_valid():
             in_name = form.cleaned_data['group_name']
             in_group = models.Group.objects.get(name__exact=in_name)
-            #new_comment = models.Comment(comment=form.cleaned_data['description'])
-            new_comment = models.Comment(comment=form.cleaned_data['description'], user=request.user, group=in_group)
-            print(new_comment.user.name_exact)
+            new_comment = models.Comment(comment=form.cleaned_data['description'], user=request.user, group=in_group, id=commentIDgenerator())
             new_comment.save()
-            #comments_list = models.Comment.objects.get(group=in_group)
             comments_list = models.Comment.objects.all().filter(group=in_group)
-            in_user = request.user
             context = {
                 'user' : in_user,
                 'comments' : comments_list,
@@ -319,11 +325,9 @@ def addComment(request):
             }
             return render(request, 'group.html', context)
         else:
-            #in_name = form.cleaned_data['group_name']
-            in_name = request.POST.get('name', 'None')
+            in_name = form.cleaned_data['group_name']
             in_group = models.Group.objects.get(name__exact=in_name)
             comments_list = models.Comment.objects.all().filter(group=in_group)
-            in_user = request.user
             context = {
                 'user' : in_user,
                 'comments' : comments_list,
@@ -331,5 +335,8 @@ def addComment(request):
                 'group' : in_group,
                 'userIsMember' : True
             }
-            print("failed")
-    return render(request, 'group.html', context)
+    groups_list = models.Group.objects.all()
+    context = {
+        'groups' : groups_list,
+    }
+    return render(request, 'groups.html', context)
