@@ -36,11 +36,10 @@
 					</td><td></td></tr>
 
 					{% if updatePermission == True %}
-					<!--
 						<form method="POST" action="/project/update_handler">{% csrf_token %}
 							<input type="hidden" name="target_project" value="{{currProject.get_name}}" />
 							<input type="submit" class='btn btn-primary' value="Update this project">
-						</form>-->
+						</form>
 					{% endif %}
 
 					{% if deletePermission == True %}
@@ -49,7 +48,10 @@
 							<input type="submit" class='btn btn-danger' value="Delete this project">
 						</form>
 					{% endif %}
-
+					<br>
+					{% for tag in currProject.tag.all %}
+						<label class='btn-sm btn-{{tag.tagtype}}'> {{ tag.tagname }} </label>
+					{% endfor %}
 				</tbody>
 
 				</table>

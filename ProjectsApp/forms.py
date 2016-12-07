@@ -12,10 +12,9 @@ class ProjectForm(forms.Form):
     programmingLanguage = forms.CharField(label='programmingLanguage', max_length = 300)
     speciality = forms.CharField(label='speciality', max_length = 300)
     yearsOfExperience = forms.CharField(label='speciality', max_length = 300)
-
     class Meta:
         model = Project
-        fields = ('name', 'programmingLanguage', 'description', 'speciality','yearsOfExperience')
+        fields = ('name', 'programmingLanguage', 'description', 'speciality','yearsOfExperience','tag')
 
         def clean_name(self):
             return self.cleaned_data.get('name')
@@ -31,3 +30,6 @@ class ProjectForm(forms.Form):
 
         def clean_yearsOfExperience(self):
             return self.cleaned_data.get('yearsOfExperience')
+
+        def clean_tag(self):
+            return self.cleaned_data.get('tag')

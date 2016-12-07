@@ -1,11 +1,13 @@
 """GroupsApp Views
 Created by Naman Patwari on 10/10/2016.
 """
+import logging
 from django.shortcuts import render
-
 from . import models
 from . import forms
-
+from ProjectsApp.models import projectTag
+from ProjectsApp.models import Project
+from collections import Counter
 def getGroups(request):
     if request.user.is_authenticated():
         groups_list = models.Group.objects.all()
@@ -16,18 +18,89 @@ def getGroups(request):
     # render error page if user is not logged in
     return render(request, 'autherror.html')
 
+
+def projectsMatching(group=None):
+    tag_list = group.tag.all()
+    suggested_project = []
+    return_list = []
+    for t in tag_list:
+        projects = Project.objects.all().filter(tag=t)
+        for p in projects:
+            suggested_project.append(p)
+    suggested_project.sort(key=Counter(suggested_project).get, reverse=True)
+    for s in suggested_project:
+        if s not in return_list:
+            return_list.append(s)
+    #suggested_project = list(set(suggested_project))
+    return return_list[:5]
+
+
+def addTag(request):
+    if request.user.is_authenticated():
+        in_name = request.POST.get('name', 'None')
+        new_tag_name = request.POST.get('tag',None)
+        new_tag = projectTag.objects.get(tagname__exact=new_tag_name)
+        in_group = models.Group.objects.get(name__exact=in_name)
+        in_group.tag.add(new_tag)
+        is_member = in_group.members.filter(email__exact=request.user.email)
+        in_user = request.user
+        comments_list = models.Comment.objects.all()
+        tags = projectTag.objects.all()
+        suggested_project = projectsMatching(group=in_group)
+        context = {
+            'user' : in_user,
+            'comments' : comments_list,
+            'group' : in_group,
+            'userIsMember': is_member,
+            'tags':tags,
+            'suggested_project':suggested_project,
+        }
+        return render(request, 'group.html', context)
+    # render error page if user is not logged in
+    return render(request, 'autherror.html')
+
+def removeTag(request):
+    if request.user.is_authenticated():
+        in_name = request.POST.get('name', 'None')
+        in_group = models.Group.objects.get(name__exact=in_name)
+        is_member = in_group.members.filter(email__exact=request.user.email)
+        new_tag_name = request.POST.get('tag',None)
+        new_tag = projectTag.objects.get(tagname__exact=new_tag_name)
+        in_group = models.Group.objects.get(name__exact=in_name)
+        in_group.tag.remove(new_tag)
+        in_user = request.user
+        comments_list = models.Comment.objects.all()
+        tags = projectTag.objects.all()
+        suggested_project = projectsMatching(group=in_group)
+        context = {
+            'user' : in_user,
+            'comments' : comments_list,
+            'group' : in_group,
+            'userIsMember': is_member,
+            'tags':tags,
+            'suggested_project':suggested_project,
+        }
+        return render(request, 'group.html', context)
+    # render error page if user is not logged in
+    return render(request, 'autherror.html')
+
+
 def getGroup(request):
     if request.user.is_authenticated():
         in_name = request.GET.get('name', 'None')
         in_group = models.Group.objects.get(name__exact=in_name)
         is_member = in_group.members.filter(email__exact=request.user.email)
         in_user = request.user
-        comments_list = models.Comment.objects.all()
+        comments_list = models.Comment.objects.all().filter(group=in_group)
+        tags = projectTag.objects.all()
+        suggested_project = projectsMatching(group=in_group)
         context = {
             'user' : in_user,
             'comments' : comments_list,
             'group' : in_group,
             'userIsMember': is_member,
+            'tags':tags,
+            'suggested_project':suggested_project,
         }
         return render(request, 'group.html', context)
     # render error page if user is not logged in
@@ -67,7 +140,7 @@ def joinGroup(request):
         request.user.group_set.add(in_group)
         request.user.save()
         in_user = request.user
-        comments_list = models.Comment.objects.all()
+        comments_list = models.Comment.objects.all().filter(group=in_group)
         context = {
             'comments' : comments_list,
             'user' : in_user,
@@ -158,7 +231,7 @@ def setProjectFormSuccess(request):
                 in_group.project_name = in_project
                 in_group.save();
                 in_user = request.user
-                comments_list = models.Comment.objects.all()
+                comments_list = models.Comment.objects.all().filter(group=in_group)
                 print("\nproject\n")
                 context = {
                     'comments' : comments_list,
@@ -178,6 +251,8 @@ def setProjectFormSuccess(request):
 def deleteGroupForm(request):
     if request.user.is_authenticated():
         in_name = request.GET.get('name', 'None')
+        print("QQWE")
+        print(in_name)
         in_group = models.Group.objects.get(name__exact=in_name)
         context = {
             'name' : in_name,
@@ -205,7 +280,7 @@ def deleteGroupFormSuccess(request):
                         in_group.save();
                         user.group_set.remove(in_group)
                         user.save()
-                        in_group.delete()
+                    in_group.delete()
                     return render(request, 'groups.html', context)
                 else:
                     in_user = request.user
@@ -224,13 +299,16 @@ def deleteGroupFormSuccess(request):
 def addComment(request):
     if request.method == 'POST':
         form = forms.CommentForm(request.POST)
+        # = request.POST.get('name', 'None')
         if form.is_valid():
             in_name = form.cleaned_data['group_name']
             in_group = models.Group.objects.get(name__exact=in_name)
             #new_comment = models.Comment(comment=form.cleaned_data['description'])
-            new_comment = models.Comment(comment=form.cleaned_data['description'], user = request.user)
+            new_comment = models.Comment(comment=form.cleaned_data['description'], user=request.user, group=in_group)
+            print(new_comment.user.name_exact)
             new_comment.save()
-            comments_list = models.Comment.objects.all()
+            #comments_list = models.Comment.objects.get(group=in_group)
+            comments_list = models.Comment.objects.all().filter(group=in_group)
             in_user = request.user
             context = {
                 'user' : in_user,
@@ -241,12 +319,10 @@ def addComment(request):
             }
             return render(request, 'group.html', context)
         else:
-            form = forms.CommentForm()
-            in_name = form.cleaned_data['group_name']
+            #in_name = form.cleaned_data['group_name']
+            in_name = request.POST.get('name', 'None')
             in_group = models.Group.objects.get(name__exact=in_name)
-            new_comment = models.Comment(comment=form.cleaned_data['description'])
-            new_comment.save()
-            comments_list = models.Comment.objects.all()
+            comments_list = models.Comment.objects.all().filter(group=in_group)
             in_user = request.user
             context = {
                 'user' : in_user,
@@ -255,4 +331,5 @@ def addComment(request):
                 'group' : in_group,
                 'userIsMember' : True
             }
+            print("failed")
     return render(request, 'group.html', context)

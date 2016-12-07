@@ -16,5 +16,6 @@ urlpatterns = [
     url(r'^project/update$', views.update, name='updateHandler'),
     url(r'^project/bookmark$', views.makeBookmark, name='makeBookmark'),
     url(r'^project/bookmark/remove$', views.removeBookmark, name='removeBookmark'),
-    
+    url(r'^project/addTag$', views.addTag, name='addTag'),
+    url(r'^project/removeTag$', views.removeTag, name='removeTag'),
 ]

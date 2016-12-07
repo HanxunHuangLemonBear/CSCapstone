@@ -6,12 +6,55 @@
 	<div class="container theme-showcase" role="main">
 		<div class="jumbotron">
 			<h1>{{ group.name }}</h1>
+			<h4>			{% for tag in group.tag.all %}
+									<label class='btn-sm btn-{{tag.tagtype}}'> {{ tag.tagname }} </label>
+								{% endfor %}
+			</h4>
 			{{ group.description | safe }}
 			{% if userIsMember %}
 			<a href="/group/unjoin?name={{ group.name }}" class="btn btn-default">Unjoin this Group</a>
 			<a href="/group/addMemberForm?name={{ group.name }}" class="btn btn-default">Add Member</a>
 			<a href="/group/setprojectform?name={{ group.name }}" class="btn btn-default">Set Group Project</a>
 			<a href="/group/deletegroupform?name={{ group.name }}" class="btn btn-default">Delete Group</a>
+
+			<script type="text/javascript">
+			function showDiv() {
+				document.getElementById('welcomeDiv').style.display = "block";
+			}
+			function toggle_visibility() {
+				var e = document.getElementById('welcomeDiv');
+				if(e.style.display == 'block')
+					e.style.display = 'none';
+				else
+					e.style.display = 'block';
+				}
+			</script>
+			<input class="btn btn-default" type="button" name="answer" value="Edit Tag" onclick="toggle_visibility()"/>
+
+			<div id="welcomeDiv"  style="display:none;" class="answer_list" >
+			<form id="addTag" method="post" enctype="multipart/form-data" action="/group/addTag" class="panel-body validate">{% csrf_token %}
+				<input value="{{group.name}}" type="hidden" name="name" id="name" class="form-control" data-bvalidator="required" data-bvalidator-msg="Name Required">
+				<label for="tag">Select a tag</label>
+				<select name="tag" id="tag" form="addTag" class="form-control">
+					{% for t in tags %}
+						<option value="{{ t.get_name }}">{{ t.get_name }}</option>
+						{% endfor %}
+					</select>
+				<input type="submit" value="Add tag" class="btn btn-primary btn-block">
+			</form>
+
+			<form id="removeTag" method="post" enctype="multipart/form-data" action="/group/removeTag" class="panel-body validate">{% csrf_token %}
+			<input value="{{group.name}}" type="hidden" name="name" id="name" class="form-control" data-bvalidator="required" data-bvalidator-msg="Name Required">
+			<select name="tag" id="tag" form="removeTag" class="form-control">
+				{% for t in group.tag.all %}
+					<option value="{{ t.tagname }}">{{ t.tagname }}</option>
+				{% endfor %}
+			</select>
+			<input type="submit" value="Remove tag" class="btn btn-warning btn-block">
+			</form>
+			</div>
+
+
 			{% else %}
 			<a href="/group/join?name={{ group.name }}" class="btn btn-default">Join this Group</a>
 			{% endif %}
@@ -20,6 +63,25 @@
 
 	<div class="container">
 		<div class="table-responsive">
+			<table class="table table-striped sortable">
+				<thead>
+					<tr>
+						<th>Suggested project</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for item in suggested_project %}
+					<tr>
+						<td><a href="/project?name={{ item.name }}">{{ item.name }}</a></td>
+						<td>{{ item.description | safe }}</td>
+						<td>{{ item.programmingLanguage }}</td>
+						<td>{{ item.speciality }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
+
 			<table class="table table-striped sortable">
 				<thead>
 					<tr>
@@ -64,7 +126,7 @@
 	{% if userIsMember %}
 	<div class="container" role="main">
 	    <div class="panel panel-default">
-	        <form method="post" enctype="multipart/form-data" action="addcomment" class="panel-body validate">
+	        <form method="post" enctype="multipart/form-data" action="group/addcomment" class="panel-body validate">
 	        {% csrf_token %}
 	             <label for="comment">Add Comment</label>
 	             <input type="hidden" name="group_name" id="group_name" placeholder="{{group.name}}" value="{{ group.name }}" readonly/>
@@ -89,7 +151,7 @@
 	            <tr>
 	                <td>{{ item.time }}</td>
 	                <td>{{ item.comment|safe }}</td>
-									<td>{{ item.comment.user.get_full_name }}</td>
+									<td>{{ item.comment.user.name }}</td>
 	            </tr>
 	            {% endfor %}
 	        </tbody>

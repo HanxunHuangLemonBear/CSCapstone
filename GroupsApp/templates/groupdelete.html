@@ -8,12 +8,12 @@
 			<h3 style="margin: 0px; padding: 0px;">Delete Group</h3>
 		</div>
 		<div class="panel panel-default">
-			<form method="post" action="/group/deletegroupformsuccess?Name={{group.name}}" class="panel-body validate">
+			<form method="post" action="/group/deletegroupformsuccess?name={{group.name}}" class="panel-body validate">
 				{% csrf_token %}
 				<label for="Type 'confirm' to delete the group"></label>
 			<!--	<h6 style="color:red">{{ error }}</h6> -->
 				<input type="text" name="confirm" id="confirm" placeholder="Type 'confirm' to delete the group" class="form-control">
-        <input type="hidden" name="group_name" id="group_name" placeholder="{{group.name}}" value="{{ group.name }}" readonly/>
+        <input type="text" name="group_name" id="group_name" placeholder="{{group.name}}" value="{{ group.name }}" readonly/>
 				<input type="submit" value="Submit" class="btn btn-primary">
 			</form>
 		</div>

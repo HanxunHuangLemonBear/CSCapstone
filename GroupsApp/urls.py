@@ -19,5 +19,7 @@ urlpatterns = [
     url(r'^group/setprojectform$', views.setProjectForm, name='GSetProject'),
     url(r'^group/setprojectformsuccess$', views.setProjectFormSuccess, name='GSetProjectSuccess'),
     url(r'^group/unjoin$', views.unjoinGroup, name='GUnjoin'),
+    url(r'^group/addTag$', views.addTag, name='addTag'),
+    url(r'^group/removeTag$', views.removeTag, name='removeTag'),
     url(r'^group$', views.getGroup, name='Group'),
 ]
