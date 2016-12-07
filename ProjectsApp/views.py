@@ -16,8 +16,20 @@ from AuthenticationApp.models import MyUser
 
 def getProjects(request):
 	projects_list = models.Project.objects.all()
+	tag_list = models.projectTag.objects.all()
+	tag_name = request.GET.get('tag', None);
+	if tag_name != None:
+		tag = models.projectTag.objects.get(tagname__exact=tag_name)
+		projects_list = models.Project.objects.all().filter(tag=tag)
+		return render(request, 'projects.html', {
+	        'projects': projects_list,
+			'target_tag': tag_name,
+	    })
+
+
 	return render(request, 'projects.html', {
         'projects': projects_list,
+		'tag_list': tag_list,
     })
 
 def getProject(request):

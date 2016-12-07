@@ -7,7 +7,7 @@
 		<div class="jumbotron">
 			<h1>{{ group.name }}</h1>
 			<h4>			{% for tag in group.tag.all %}
-									<label class='btn-sm btn-{{tag.tagtype}}'> {{ tag.tagname }} </label>
+									<a href="/project/all?tag={{tag.tagname}}"><label class='btn-sm btn-{{tag.tagtype}}'> {{ tag.tagname }} </label></a>
 								{% endfor %}
 			</h4>
 			{{ group.description | safe }}

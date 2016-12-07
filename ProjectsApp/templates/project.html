@@ -50,7 +50,7 @@
 					{% endif %}
 					<br>
 					{% for tag in currProject.tag.all %}
-						<label class='btn-sm btn-{{tag.tagtype}}'> {{ tag.tagname }} </label>
+						<a href="/project/all?tag={{tag.tagname}}"><label class='btn-sm btn-{{tag.tagtype}}'> {{ tag.tagname }} </label></a>
 					{% endfor %}
 				</tbody>
 
