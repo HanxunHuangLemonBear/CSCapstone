@@ -9,24 +9,36 @@
 		<div class="panel panel-default">
 			<h4 style="color:red">{{ user_error }}</h4>
 			{% if not user_error %}
-			<form method="post" enctype="multipart/form-data" action="/project/formsuccess" class="panel-body validate">{% csrf_token %}
+			<form method="post" id="projectForm" enctype="multipart/form-data" action="/project/formsuccess" class="panel-body validate">{% csrf_token %}
 				<label for="name">Name</label>
         <h6 style="color:red">{{ error }}</h6>
 
 				<input type="text" name="name" id="name" placeholder="Name" class="form-control" data-bvalidator="required" data-bvalidator-msg="Name Required">
 				<br>
 
-				<label for="website">Programming Language</label>
+				<label for="programmingLanguage">Programming Language</label>
 				<input type="text" name="programmingLanguage" id="programmingLanguage" placeholder="Python" class="form-control">
 				<br>
 
-				<label for="website">Years of Experience</label>
+				<label for="yearsOfExperience">Years of Experience</label>
 				<input type="text" name="yearsOfExperience" id="yearsOfExperience" placeholder="" class="form-control">
 				<br>
 
-				<label for="website">Speciality</label>
+				<label for="speciality">Speciality</label>
 				<input type="text" name="speciality" id="speciality" placeholder="" class="form-control">
 				<br>
+
+
+				<label for="tag">Select a tag</label>
+					<select name="tag" id="tag" form="projectForm" class="form-control">
+						{% for t in tags %}
+				  		<option value="{{ t.get_name }}">{{ t.get_name }}</option>
+						{% endfor %}
+					</select>
+
+				<br>
+
+
 
 				<label for="description">Project Description</label>
 				<textarea name="description" id="description" placeholder="Description" class="form-control" data-bvalidator="required" data-bvalidator-msg="Description Required"></textarea>

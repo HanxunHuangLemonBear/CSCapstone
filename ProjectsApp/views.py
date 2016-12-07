@@ -9,6 +9,7 @@ from . import forms
 import datetime
 import logging
 from .models import Project
+from .models import projectTag
 from .forms import ProjectForm
 from AuthenticationApp.models import MyUser
 
@@ -21,12 +22,13 @@ def getProjects(request):
 
 def getProject(request):
 	project_name = request.GET.get("name",None)
+	currProject = models.Project.objects.get(name__exact=project_name)
 	if project_name == None:
 		return render(request, 'not_found.html')
 	try:
 		currProject = models.Project.objects.get(name__exact=project_name)
 		context = {'currProject' : currProject}
-		if request.user.is_admin == True or request.user == currProject.owner or request.user.company_name == currProject.company:
+		if request.user.is_admin == True or request.user == currProject.owner or request.user.company_name == currProject.company != None:
 			context.update({'deletePermission' : True})
 		if request.user == currProject.owner:
 			context.update({'updatePermission' : True})
@@ -36,9 +38,10 @@ def getProject(request):
 
 def getProjectForm(request):
 	if request.user.is_authenticated():
+		tags = projectTag.objects.all()
 		if not request.user.is_engineer:
 			return render(request, 'projectform.html', {'user_error' : 'Only Engineers can create_project'})
-		return render(request, 'projectform.html')
+		return render(request, 'projectform.html',{'tags':tags})
     # render error page if user is not logged in
 	return render(request, 'autherror.html')
 
@@ -53,6 +56,9 @@ def getProjectFormSuccess(request):
 				if models.Project.objects.filter(name__exact=form.cleaned_data['name']).exists():
 					return render(request, 'projectform.html', {'error' : 'Error: That project name already exists!'})
 				new_project = Project()
+				tag_name = request.POST.get('tag',None)
+				project_tag = [models.projectTag.objects.get(tagname__exact=tag_name)]
+				#logging.getLogger('django').info(project_tag)
 				new_project.create_project(
 					name=form.cleaned_data.get('name',None),
 					description=form.cleaned_data.get('description',None),
@@ -60,14 +66,18 @@ def getProjectFormSuccess(request):
 					yearsOfExperience=form.cleaned_data.get('yearsOfExperience',None),
 					speciality=form.cleaned_data.get('speciality',None),
 					owner=request.user,
-					company=request.user.company_name
+					company=request.user.company_name,
+					tag=project_tag
 				)
+				new_project.tag = project_tag;
+				new_project.save()
 				context = {'name' : form.cleaned_data['name'],}
 				return render(request, 'projectformsuccess.html', context)
 
 		else:
 			form = forms.ProjectForm()
-	return render(request, 'projectform.html')
+	tags = projectTag.objects.all()
+	return render(request, 'projectform.html',{'tags':tags})
 
 
 
@@ -99,17 +109,23 @@ def update_handler(request):
 		context = {'error' : "You do not have no permission to delete this project",'is_error':True,'currProject':currProject}
 		return render(request, 'project.html',context)
 	context = {'currProject' : currProject}
+	tags = projectTag.objects.all()
 	form = forms.ProjectForm(request.POST)
 	context.update({'form':form})
+	context.update({'tags':tags})
 	return render(request, 'updateform.html',context)
 
 def update(request):
 	if request.method == 'POST':
 		form = forms.ProjectForm(request.POST, request.FILES)
+		try:
+			currProject = models.Project.objects.get(name__exact=request.POST.get('name',None))
+		except:
+			return render(request, 'not_found.html')
 		if form.is_valid():
-			logging.getLogger('django').info(request.user)
+			#logging.getLogger('django').info(request.POST.get('name',None))
 			try:
-				currProject = models.Project.objects.get(name__exact=form.cleaned_data['name'])
+				currProject = models.Project.objects.get(name__exact=request.POST.get('name',None))
 			except:
 				return render(request, 'not_found.html')
 			currProject.programmingLanguage = form.cleaned_data['programmingLanguage']
@@ -118,8 +134,53 @@ def update(request):
 			currProject.description = form.cleaned_data['description']
 			currProject.save()
 			context = {'name' : form.cleaned_data['name'],}
-			return render(request, 'projectformsuccess.html', context)
-	else:
-		#logging.getLogger('django').info(request.user)
+			return render(request, 'projectformupdatesuccess.html', context)
+	try:
 		form = forms.ProjectForm()
-	return render(request, 'updateform.html')
+		currProject = models.Project.objects.get(name__exact=request.POST.get('name',None))
+		context = {'currProject' : currProject}
+		context.update({'form':form})
+		return render(request, 'updateform.html',context)
+	except:
+		return render(request, 'not_found.html')
+
+
+def addTag(request):
+	currProject_name = request.POST.get('name',None)
+	try:
+		currProject = models.Project.objects.get(name__exact=currProject_name)
+		new_tag_name = request.POST.get('tag',None)
+		new_tag = models.projectTag.objects.get(tagname__exact=new_tag_name)
+		currProject.tag.add(new_tag)
+	except:
+		return render(request, 'not_found.html')
+
+	if request.user.is_admin == False and request.user != currProject.owner:
+		context = {'error' : "You do not have no permission to delete this project",'is_error':True,'currProject':currProject}
+		return render(request, 'project.html',context)
+	context = {'currProject' : currProject}
+	tags = projectTag.objects.all()
+	form = forms.ProjectForm(request.POST)
+	context.update({'form':form})
+	context.update({'tags':tags})
+	return render(request, 'updateform.html',context)
+
+def removeTag(request):
+	currProject_name = request.POST.get('name',None)
+	try:
+		currProject = models.Project.objects.get(name__exact=currProject_name)
+		new_tag_name = request.POST.get('tag',None)
+		new_tag = models.projectTag.objects.get(tagname__exact=new_tag_name)
+		currProject.tag.remove(new_tag)
+	except:
+		return render(request, 'not_found.html')
+
+	if request.user.is_admin == False and request.user != currProject.owner:
+		context = {'error' : "You do not have no permission to delete this project",'is_error':True,'currProject':currProject}
+		return render(request, 'project.html',context)
+	context = {'currProject' : currProject}
+	tags = projectTag.objects.all()
+	form = forms.ProjectForm(request.POST)
+	context.update({'form':form})
+	context.update({'tags':tags})
+	return render(request, 'updateform.html',context)

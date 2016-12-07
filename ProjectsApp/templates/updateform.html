@@ -4,24 +4,66 @@
 	<!-- Content -->
 	<div class="container" role="main">
 		<div class="jumbotron">
-			<h3 style="margin: 0px; padding: 0px;">Update Project</h3>
+			<h3 style="margin: 0px; padding: 0px;">Update Project {{ currProject.get_name }}</h3>
+			<h5>tags:
+					{% for tag in currProject.tag.all %}
+						<label class='btn-sm btn-{{tag.tagtype}}'> {{ tag.tagname }} </label>
+					{% endfor %}
+			</h5>
+			<table class="table">
+				<thead>
+				</thead>
+				<tbody>
+					<tr><td>Owner:</td><td> <a href = "/profile?name={{currProject.get_owner.get_email}}">{{currProject.get_owner}}</a></td></tr>
+					<tr><td>Company:</td><td> <a href = "/company?name={{currProject.get_company.name}}">{{currProject.get_company}}</a></td></tr>
+					<tr><td>Created time:</td><td>{{currProject.get_created_at}}</td></tr>
+					<tr><td>Last modified:</td><td>{{currProject.get_updated_at}}</td></tr>
+					<tr><td>
+						{{ currProject.get_description | safe }}
+					</td><td></td></tr>
+				</tbody>
+				</table>
+
+
+				<form id="addTag" method="post" enctype="multipart/form-data" action="/project/addTag" class="panel-body validate">{% csrf_token %}
+					<input value="{{currProject.get_name}}" type="hidden" name="name" id="name" class="form-control" data-bvalidator="required" data-bvalidator-msg="Name Required">
+					<label for="tag">Select a tag</label>
+					<select name="tag" id="tag" form="addTag" class="form-control">
+						{% for t in tags %}
+							<option value="{{ t.get_name }}">{{ t.get_name }}</option>
+							{% endfor %}
+						</select>
+					<input type="submit" value="Add tag" class="btn btn-primary btn-block">
+				</form>
+				<form id="removeTag" method="post" enctype="multipart/form-data" action="/project/removeTag" class="panel-body validate">{% csrf_token %}
+				<input value="{{currProject.get_name}}" type="hidden" name="name" id="name" class="form-control" data-bvalidator="required" data-bvalidator-msg="Name Required">
+				<select name="tag" id="tag" form="removeTag" class="form-control">
+					{% for t in currProject.tag.all %}
+						<option value="{{ t.tagname }}">{{ t.tagname }}</option>
+					{% endfor %}
+				</select>
+				<input type="submit" value="Remove tag" class="btn btn-warning btn-block">
+				</form>
+
+
+
 		</div>
 		<div class="panel panel-default">
 			<h4 style="color:red">{{ user_error }}</h4>
 			{% if not user_error %}
-			<form method="post" enctype="multipart/form-data" action="/project/update_handler" class="panel-body validate">{% csrf_token %}
+			<form method="post" enctype="multipart/form-data" action="/project/update" class="panel-body validate">{% csrf_token %}
 				<label for="name">Name</label>
         <h6 style="color:red">{{ error }}</h6>
-				<input disabled value="{{currProject.get_name}}" type="text" name="name" id="name" placeholder="Name" class="form-control" data-bvalidator="required" data-bvalidator-msg="Name Required">
+				<input disabled value="{{currProject.get_name}}" type="text" name="name" id="name" class="form-control" data-bvalidator="required" data-bvalidator-msg="Name Required">
+				<input value="{{currProject.get_name}}" type="hidden" name="name" id="name" class="form-control" data-bvalidator="required" data-bvalidator-msg="Name Required">
 				<br>
 
 				<label for="Programming Language">Programming Language</label>
-					<input>{{form.programmingLanguage}}</input>
-
+				<input value="{{currProject.programmingLanguage}}"type="text" name="programmingLanguage" id="programmingLanguage" placeholder="" class="form-control">
 				<br>
 
 				<label for="Years of Experience">Years of Experience</label>
-				<input value="{{currProject.get_company}}"type="text" name="yearsOfExperience" id="yearsOfExperience" placeholder="" class="form-control">
+				<input value="{{currProject.yearsOfExperience}}"type="text" name="yearsOfExperience" id="yearsOfExperience" placeholder="" class="form-control">
 				<br>
 
 				<label for="Speciality">Speciality</label>
@@ -29,7 +71,7 @@
 				<br>
 
 				<label for="Project Description">Project Description</label>
-				<textarea name="description" id="description" placeholder="Description" class="form-control" data-bvalidator="required" data-bvalidator-msg="Description Required"></textarea>
+				<textarea value="{{currProject.description}}" name="description" id="description" placeholder="Description" class="form-control" data-bvalidator="required" data-bvalidator-msg="Description Required"></textarea>
 				<br>
 
 				<input type="submit" value="Update" class="btn btn-primary">
