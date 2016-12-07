@@ -26,7 +26,7 @@
 				<tbody>
 					{% for item in university.members.all %}
 					<tr>
-						<td>{{ item.get_full_name }}</td>
+            <td><a href="/profile?name={{item.email}}">{{ item.get_full_name }}</a></td>
 					</tr>
 					{% endfor %}
 				</tbody>
@@ -53,5 +53,5 @@
 			</table>
 		</div>
 	</div>
-	
+
 {% endblock %}
