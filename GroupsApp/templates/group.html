@@ -17,6 +17,21 @@
 			<a href="/group/setprojectform?name={{ group.name }}" class="btn btn-default">Set Group Project</a>
 			<a href="/group/deletegroupform?name={{ group.name }}" class="btn btn-default">Delete Group</a>
 
+			<script type="text/javascript">
+			function showDiv() {
+				document.getElementById('welcomeDiv').style.display = "block";
+			}
+			function toggle_visibility() {
+				var e = document.getElementById('welcomeDiv');
+				if(e.style.display == 'block')
+					e.style.display = 'none';
+				else
+					e.style.display = 'block';
+				}
+			</script>
+			<input class="btn btn-default" type="button" name="answer" value="Edit Tag" onclick="toggle_visibility()"/>
+
+			<div id="welcomeDiv"  style="display:none;" class="answer_list" >
 			<form id="addTag" method="post" enctype="multipart/form-data" action="/group/addTag" class="panel-body validate">{% csrf_token %}
 				<input value="{{group.name}}" type="hidden" name="name" id="name" class="form-control" data-bvalidator="required" data-bvalidator-msg="Name Required">
 				<label for="tag">Select a tag</label>
@@ -37,6 +52,7 @@
 			</select>
 			<input type="submit" value="Remove tag" class="btn btn-warning btn-block">
 			</form>
+			</div>
 
 
 			{% else %}
