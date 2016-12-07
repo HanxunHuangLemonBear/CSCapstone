@@ -13,6 +13,7 @@ class Group(models.Model):
     description = models.CharField(max_length=300)
     members = models.ManyToManyField(MyUser)
     project_name = models.ForeignKey('ProjectsApp.Project', null=True, blank=True)
+    tag = models.ManyToManyField('ProjectsApp.projectTag', blank=True)
 
     def __str__(self):
         return self.name

@@ -1,10 +1,12 @@
 """GroupsApp Views
 Created by Naman Patwari on 10/10/2016.
 """
+import logging
 from django.shortcuts import render
-
 from . import models
 from . import forms
+from ProjectsApp.models import projectTag
+from ProjectsApp.models import Project
 
 def getGroups(request):
     if request.user.is_authenticated():
@@ -16,6 +18,67 @@ def getGroups(request):
     # render error page if user is not logged in
     return render(request, 'autherror.html')
 
+def projectsMatching(group=None):
+    tag_list = group.tag.all()
+    suggested_project = []
+    for t in tag_list:
+        projects = Project.objects.all().filter(tag=t)
+        for p in projects:
+            if p not in suggested_project:
+                suggested_project.append(p)
+    return suggested_project
+
+
+def addTag(request):
+    if request.user.is_authenticated():
+        in_name = request.POST.get('name', 'None')
+        new_tag_name = request.POST.get('tag',None)
+        new_tag = projectTag.objects.get(tagname__exact=new_tag_name)
+        in_group = models.Group.objects.get(name__exact=in_name)
+        in_group.tag.add(new_tag)
+        is_member = in_group.members.filter(email__exact=request.user.email)
+        in_user = request.user
+        comments_list = models.Comment.objects.all()
+        tags = projectTag.objects.all()
+        suggested_project = projectsMatching(group=in_group)
+        context = {
+            'user' : in_user,
+            'comments' : comments_list,
+            'group' : in_group,
+            'userIsMember': is_member,
+            'tags':tags,
+            'suggested_project':suggested_project,
+        }
+        return render(request, 'group.html', context)
+    # render error page if user is not logged in
+    return render(request, 'autherror.html')
+
+def removeTag(request):
+    if request.user.is_authenticated():
+        in_name = request.POST.get('name', 'None')
+        in_group = models.Group.objects.get(name__exact=in_name)
+        is_member = in_group.members.filter(email__exact=request.user.email)
+        new_tag_name = request.POST.get('tag',None)
+        new_tag = projectTag.objects.get(tagname__exact=new_tag_name)
+        in_group = models.Group.objects.get(name__exact=in_name)
+        in_group.tag.remove(new_tag)
+        in_user = request.user
+        comments_list = models.Comment.objects.all()
+        tags = projectTag.objects.all()
+        suggested_project = projectsMatching(group=in_group)
+        context = {
+            'user' : in_user,
+            'comments' : comments_list,
+            'group' : in_group,
+            'userIsMember': is_member,
+            'tags':tags,
+            'suggested_project':suggested_project,
+        }
+        return render(request, 'group.html', context)
+    # render error page if user is not logged in
+    return render(request, 'autherror.html')
+
+
 def getGroup(request):
     if request.user.is_authenticated():
         in_name = request.GET.get('name', 'None')
@@ -23,11 +86,15 @@ def getGroup(request):
         is_member = in_group.members.filter(email__exact=request.user.email)
         in_user = request.user
         comments_list = models.Comment.objects.all()
+        tags = projectTag.objects.all()
+        suggested_project = projectsMatching(group=in_group)
         context = {
             'user' : in_user,
             'comments' : comments_list,
             'group' : in_group,
             'userIsMember': is_member,
+            'tags':tags,
+            'suggested_project':suggested_project,
         }
         return render(request, 'group.html', context)
     # render error page if user is not logged in

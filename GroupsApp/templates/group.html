@@ -6,12 +6,39 @@
 	<div class="container theme-showcase" role="main">
 		<div class="jumbotron">
 			<h1>{{ group.name }}</h1>
+			<h4>			{% for tag in group.tag.all %}
+									<label class='btn-sm btn-{{tag.tagtype}}'> {{ tag.tagname }} </label>
+								{% endfor %}
+			</h4>
 			{{ group.description | safe }}
 			{% if userIsMember %}
 			<a href="/group/unjoin?name={{ group.name }}" class="btn btn-default">Unjoin this Group</a>
 			<a href="/group/addMemberForm?name={{ group.name }}" class="btn btn-default">Add Member</a>
 			<a href="/group/setprojectform?name={{ group.name }}" class="btn btn-default">Set Group Project</a>
 			<a href="/group/deletegroupform?name={{ group.name }}" class="btn btn-default">Delete Group</a>
+
+			<form id="addTag" method="post" enctype="multipart/form-data" action="/group/addTag" class="panel-body validate">{% csrf_token %}
+				<input value="{{group.name}}" type="hidden" name="name" id="name" class="form-control" data-bvalidator="required" data-bvalidator-msg="Name Required">
+				<label for="tag">Select a tag</label>
+				<select name="tag" id="tag" form="addTag" class="form-control">
+					{% for t in tags %}
+						<option value="{{ t.get_name }}">{{ t.get_name }}</option>
+						{% endfor %}
+					</select>
+				<input type="submit" value="Add tag" class="btn btn-primary btn-block">
+			</form>
+
+			<form id="removeTag" method="post" enctype="multipart/form-data" action="/group/removeTag" class="panel-body validate">{% csrf_token %}
+			<input value="{{group.name}}" type="hidden" name="name" id="name" class="form-control" data-bvalidator="required" data-bvalidator-msg="Name Required">
+			<select name="tag" id="tag" form="removeTag" class="form-control">
+				{% for t in group.tag.all %}
+					<option value="{{ t.tagname }}">{{ t.tagname }}</option>
+				{% endfor %}
+			</select>
+			<input type="submit" value="Remove tag" class="btn btn-warning btn-block">
+			</form>
+
+
 			{% else %}
 			<a href="/group/join?name={{ group.name }}" class="btn btn-default">Join this Group</a>
 			{% endif %}
@@ -20,6 +47,25 @@
 
 	<div class="container">
 		<div class="table-responsive">
+			<table class="table table-striped sortable">
+				<thead>
+					<tr>
+						<th>Suggested project</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for item in suggested_project %}
+					<tr>
+						<td><a href="/project?name={{ item.name }}">{{ item.name }}</a></td>
+						<td>{{ item.description | safe }}</td>
+						<td>{{ item.programmingLanguage }}</td>
+						<td>{{ item.speciality }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
+
 			<table class="table table-striped sortable">
 				<thead>
 					<tr>
