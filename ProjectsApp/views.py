@@ -25,8 +25,6 @@ def getProjects(request):
 	        'projects': projects_list,
 			'target_tag': tag_name,
 	    })
-
-
 	return render(request, 'projects.html', {
         'projects': projects_list,
 		'tag_list': tag_list,
@@ -41,7 +39,7 @@ def getProject(request):
 		currProject = models.Project.objects.get(name__exact=project_name)
                 isBookmark = request.user.project_set.filter(name__exact=project_name).exists()
                 context = {'currProject' : currProject,
-                           'isBookmark'  : isBookmark,        
+                           'isBookmark'  : isBookmark,
                 }
 		if request.user.is_admin == True or request.user == currProject.owner or request.user.company_name == currProject.company != None:
 			context.update({'deletePermission' : True})
@@ -49,7 +47,6 @@ def getProject(request):
 			context.update({'updatePermission' : True})
 		return render(request, 'project.html',context)
 	except:
-                print("B")
 		return render(request, 'not_found.html')
 
 def getProjectForm(request):
