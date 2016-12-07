@@ -151,7 +151,7 @@
 	            <tr>
 	                <td>{{ item.time }}</td>
 	                <td>{{ item.comment|safe }}</td>
-									<td>{{ item.comment.user.get_full_name }}</td>
+									<td>{{ item.comment.user.name }}</td>
 	            </tr>
 	            {% endfor %}
 	        </tbody>

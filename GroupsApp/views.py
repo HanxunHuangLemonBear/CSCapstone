@@ -305,6 +305,7 @@ def addComment(request):
             in_group = models.Group.objects.get(name__exact=in_name)
             #new_comment = models.Comment(comment=form.cleaned_data['description'])
             new_comment = models.Comment(comment=form.cleaned_data['description'], user=request.user, group=in_group)
+            print(new_comment.user.name_exact)
             new_comment.save()
             #comments_list = models.Comment.objects.get(group=in_group)
             comments_list = models.Comment.objects.all().filter(group=in_group)
