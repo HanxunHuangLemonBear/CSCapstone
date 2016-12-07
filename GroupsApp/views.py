@@ -7,7 +7,7 @@ from . import models
 from . import forms
 from ProjectsApp.models import projectTag
 from ProjectsApp.models import Project
-
+from collections import Counter
 def getGroups(request):
     if request.user.is_authenticated():
         groups_list = models.Group.objects.all()
@@ -18,15 +18,21 @@ def getGroups(request):
     # render error page if user is not logged in
     return render(request, 'autherror.html')
 
+
 def projectsMatching(group=None):
     tag_list = group.tag.all()
     suggested_project = []
+    return_list = []
     for t in tag_list:
         projects = Project.objects.all().filter(tag=t)
         for p in projects:
-            if p not in suggested_project:
-                suggested_project.append(p)
-    return suggested_project
+            suggested_project.append(p)
+    suggested_project.sort(key=Counter(suggested_project).get, reverse=True)
+    for s in suggested_project:
+        if s not in return_list:
+            return_list.append(s)
+    #suggested_project = list(set(suggested_project))
+    return return_list[:5]
 
 
 def addTag(request):
