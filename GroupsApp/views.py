@@ -134,7 +134,7 @@ def joinGroup(request):
         request.user.group_set.add(in_group)
         request.user.save()
         in_user = request.user
-        comments_list = models.Comment.objects.all()
+        comments_list = models.Comment.objects.all().filter(group=in_group)
         context = {
             'comments' : comments_list,
             'user' : in_user,
@@ -245,6 +245,8 @@ def setProjectFormSuccess(request):
 def deleteGroupForm(request):
     if request.user.is_authenticated():
         in_name = request.GET.get('name', 'None')
+        print("QQWE")
+        print(in_name)
         in_group = models.Group.objects.get(name__exact=in_name)
         context = {
             'name' : in_name,
@@ -272,7 +274,7 @@ def deleteGroupFormSuccess(request):
                         in_group.save();
                         user.group_set.remove(in_group)
                         user.save()
-                        in_group.delete()
+                    in_group.delete()
                     return render(request, 'groups.html', context)
                 else:
                     in_user = request.user
@@ -291,13 +293,15 @@ def deleteGroupFormSuccess(request):
 def addComment(request):
     if request.method == 'POST':
         form = forms.CommentForm(request.POST)
+        # = request.POST.get('name', 'None')
         if form.is_valid():
             in_name = form.cleaned_data['group_name']
             in_group = models.Group.objects.get(name__exact=in_name)
             #new_comment = models.Comment(comment=form.cleaned_data['description'])
-            new_comment = models.Comment(comment=form.cleaned_data['description'], user = request.user)
+            new_comment = models.Comment(comment=form.cleaned_data['description'], user=request.user, group=in_group)
             new_comment.save()
-            comments_list = models.Comment.objects.all()
+            #comments_list = models.Comment.objects.get(group=in_group)
+            comments_list = models.Comment.objects.all().filter(group=in_group)
             in_user = request.user
             context = {
                 'user' : in_user,
@@ -308,11 +312,9 @@ def addComment(request):
             }
             return render(request, 'group.html', context)
         else:
-            form = forms.CommentForm()
-            in_name = form.cleaned_data['group_name']
+            #in_name = form.cleaned_data['group_name']
+            in_name = request.POST.get('name', 'None')
             in_group = models.Group.objects.get(name__exact=in_name)
-            new_comment = models.Comment(comment=form.cleaned_data['description'])
-            new_comment.save()
             comments_list = models.Comment.objects.all()
             in_user = request.user
             context = {
