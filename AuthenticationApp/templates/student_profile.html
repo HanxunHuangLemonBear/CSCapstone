@@ -14,8 +14,12 @@
 				<tbody>
 					<tr><td>First Name:</td><td>{{currUser.get_first_name}}</td></tr>
           <tr><td>Last Name:</td><td>{{currUser.get_last_name}}</td></tr>
+	  {% if currUser.get_university_name == None %}
+	  <tr><td>University:</td><td>{{currUser.get_university_name}}</td></tr>
+	  {% else %}
           <tr><td>University:</td><td><a href="/university?name={{currUser.get_university_name}}">{{currUser.get_university_name}}</a></td></tr>
-          <tr><td>Email:</td><td><a href="mailto:{{currUser.get_email}}">{{currUser.get_email}}</a></td></tr>
+	  {% endif %}
+	  <tr><td>Email:</td><td><a href="mailto:{{currUser.get_email}}">{{currUser.get_email}}</a></td></tr>
           <tr><td>Phone:</td><td><a href="tel:{{currUser.get_phone_number}}">{{currUser.get_phone_number}}</a></td></tr>
           {% if updatePermission == True %}
           <tr><td>
