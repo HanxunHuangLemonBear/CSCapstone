@@ -15,10 +15,10 @@ from AuthenticationApp.models import MyUser
 
 
 def getBookmarks(request):
-        in_email = request.GET.get("email", None)
-        in_user = models.MyUser.objects.get(email__exact=in_email)
-	projects_list = in_user.project_set.all()
-	return render(request, 'bookmarks.html', {
+    in_email = request.GET.get("email", None)
+    in_user = models.MyUser.objects.get(email__exact=in_email)
+    projects_list = in_user.project_set.all()
+    return render(request, 'bookmarks.html', {
         'bookmarks': projects_list,
     })
 
