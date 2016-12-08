@@ -153,7 +153,7 @@
 	                <td>{{ item.time }}</td>
 	                <td>{{ item.comment|safe }}</td>
 									<td>{{ item.user | safe }}</td>
-									{% if item.user == user %}
+									{% if item.user == user or user.is_admin %}
 									<td><form method="post" enctype="multipart/form-data" action="/group/deletecomment" class="panel-body validate">
 					        {% csrf_token %}
 					             <input type="hidden" name="token" id="token" placeholder="{{ item.token.token }}" value="{{ item.token.token }}" readonly/>
