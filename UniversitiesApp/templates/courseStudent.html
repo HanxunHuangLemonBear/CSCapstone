@@ -7,7 +7,7 @@
             <img src="/{{ university.photo }}" alt="University Image" width=150/>
 			<h2>{{ course.tag }}</h2>
 			<h3>{{ course.name }}</h3>
-			<p>{{ course.description }}</p>
+			<p>{{ course.description|safe }}</p>
             {% if userInCourse %}
             <a href="/university/course/unjoin?name={{ university.name }}&course={{ course.tag }}" class="btn btn-default">Unjoin this Course</a>
             {% else %}
@@ -34,5 +34,5 @@
 			</table>
 		</div>
 	</div>
-	
+
 {% endblock %}
