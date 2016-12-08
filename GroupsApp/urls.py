@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^group/addMemberForm$', views.addMemberForm, name='GroupAddMember'),
     url(r'^group/AddMemberFormSuccess$', views.addMemberFormSuccess, name='GroupAddMemberSuccess'),
     url(r'^group/addcomment$', views.addComment, name="GroupComment"),
+    #url(r'^group/deletecomment$', views.deleteComment, name="GroupDeleteComment"),
     url(r'^group/deletegroupform$', views.deleteGroupForm, name='GroupDelete'),
     url(r'^group/deletegroupformsuccess$', views.deleteGroupFormSuccess, name='GroupDeleteSuccess'),
 	url(r'^group/form$', views.getGroupForm, name='GroupForm'),

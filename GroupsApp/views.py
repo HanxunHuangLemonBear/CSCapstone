@@ -313,7 +313,7 @@ def addComment(request):
         if form.is_valid():
             in_name = form.cleaned_data['group_name']
             in_group = models.Group.objects.get(name__exact=in_name)
-            new_comment = models.Comment(comment=form.cleaned_data['description'], user=request.user, group=in_group, id=commentIDgenerator())
+            new_comment = models.Comment(comment=form.cleaned_data['description'], user=request.user, group=in_group, token=commentIDgenerator())
             new_comment.save()
             comments_list = models.Comment.objects.all().filter(group=in_group)
             context = {
