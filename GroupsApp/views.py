@@ -327,6 +327,7 @@ def addComment(request):
                 'userIsMember' : True
             }
             return render(request, 'group.html', context)
+            #return getGroup(request)
         else:
             in_name = form.cleaned_data['group_name']
             in_group = models.Group.objects.get(name__exact=in_name)
