@@ -221,17 +221,32 @@ def addStudentForm(request):
 
 def removeCourse(request):
 	if request.user.is_authenticated():
-		in_university_name = request.GET.get('name', 'None')
+                in_university_name = request.GET.get('name', 'None')
 		in_university = models.University.objects.get(name__exact=in_university_name)
 		in_course_tag = request.GET.get('course', 'None')
 		in_course = in_university.course_set.get(tag__exact=in_course_tag)
-		in_course.delete()
 		is_member = in_university.members.filter(email__exact=request.user.email)
-		context = {
+		print(request.user.email)
+                print(request.user.is_professor)
+                print(request.user.is_student)
+                context = {
 			'university' : in_university,
 			'userIsMember' : is_member,
 		}
-		return render(request, 'university.html', context)
+                if not request.user.is_professor:
+		    context = {
+			'university' : in_university,
+			'userIsMember' : is_member,
+                        'user_error' : 'Only Professors can remove projects',
+	            }
+                else:
+                    in_course.delete()
+                
+                if request.user.is_professor:
+                    return render(request, 'university.html', context)
+                else:
+                    return render(request, 'universityStudent.html', context)
+                    
 	# render error page if user is not logged in
 	return render(request, 'autherror.html')
 
