@@ -124,18 +124,7 @@
 		</div>
 	</div>
 	{% if userIsMember %}
-	<div class="container" role="main">
-	    <div class="panel panel-default">
-	        <form method="post" enctype="multipart/form-data" action="/group/addcomment" class="panel-body validate">
-	        {% csrf_token %}
-	             <label for="comment">Add Comment</label>
-	             <input type="hidden" name="group_name" id="group_name" placeholder="{{group.name}}" value="{{ group.name }}" readonly/>
-		     <textarea type="text" name="description" id="description" placeholder="Comment" class="form-control" data-bvalidator="required" data-bvalidator-msg="Comment Required"></textarea>
-		     <br>
-	             <input type="submit" value="Submit" class="btn btn-primary">
-	        </form>
-	    </div>
-	</div>
+
 	<div class="container" role="main">
 		<div class="table-responsive">
 	    <table class="table table-striped sortable">
@@ -168,6 +157,18 @@
 	        </tbody>
 	    </table>
 		</div>
+	</div>
+	<div class="container" role="main">
+			<div class="panel panel-default">
+					<form method="post" enctype="multipart/form-data" action="/group/addcomment" class="panel-body validate">
+					{% csrf_token %}
+							 <label for="comment">Add Comment</label>
+							 <input type="hidden" name="group_name" id="group_name" placeholder="{{group.name}}" value="{{ group.name }}" readonly/>
+				 <textarea type="text" name="description" id="description" placeholder="Comment" class="form-control" data-bvalidator="required" data-bvalidator-msg="Comment Required"></textarea>
+				 <br>
+							 <input type="submit" value="Submit" class="btn btn-primary">
+					</form>
+			</div>
 	</div>
 	{% endif %}
 {% endblock %}
