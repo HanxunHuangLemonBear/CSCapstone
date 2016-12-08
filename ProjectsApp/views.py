@@ -101,42 +101,44 @@ def getProjectFormSuccess(request):
 	return render(request, 'projectform.html',{'tags':tags})
 
 def makeBookmark(request):
-	if request.user.is_authenticated():
-		in_pName = request.GET.get('pname', 'None')
-		in_email = request.user.email
-		print(in_email)
-		in_user = models.MyUser.objects.get(email__exact=in_email)
-		currProject = models.Project.objects.get(name__exact=in_pName)
-		print(currProject)
-		in_user.project_set.add(currProject)
-		in_user.save()
-		context = {'currProject' : currProject,
-			'isBookmark'  : True,
-			}
+	#if request.user.is_authenticated():
+	in_pName = request.GET.get('pname', 'None')
+	in_email = request.user.email
+	print(in_email)
+	in_user = models.MyUser.objects.get(email__exact=in_email)
+	currProject = models.Project.objects.get(name__exact=in_pName)
+	print(currProject)
+	in_user.project_set.add(currProject)
+	in_user.save()
+	context = {'currProject' : currProject,
+		'isBookmark'  : True,
+	}
 	if request.user.is_admin == True or request.user == currProject.owner or request.user.company_name == currProject.company:
-		context.update({'deletePermission' : True})
+	    context.update({'deletePermission' : True})
 	if request.user == currProject.owner:
-		context.update({'updatePermission' : True})
-		return render(request, 'project.html', context)
-	return render(request, 'not_found.html')
+	    context.update({'updatePermission' : True})
+	return render(request, 'project.html', context)
+        #print(request.user.email)
+	#return render(request, 'not_found.html')
 
 def removeBookmark(request):
-	if request.user.is_authenticated():
-		in_pName = request.GET.get('pname', 'None')
-		in_email = request.user.email
-		in_user = models.MyUser.objects.get(email__exact=in_email)
-		currProject = models.Project.objects.get(name__exact=in_pName)
-		in_user.project_set.remove(currProject)
-		in_user.save()
-		context = {'currProject' : currProject,
-			'isBookmark'  : False,
+	#if request.user.is_authenticated():
+	in_pName = request.GET.get('pname', 'None')
+	in_email = request.user.email
+	in_user = models.MyUser.objects.get(email__exact=in_email)
+	currProject = models.Project.objects.get(name__exact=in_pName)
+	in_user.project_set.remove(currProject)
+	in_user.save()
+	context = {'currProject' : currProject,
+		'isBookmark'  : False,
         }
 	if request.user.is_admin == True or request.user == currProject.owner or request.user.company_name == currProject.company:
 	    context.update({'deletePermission' : True})
 	if request.user == currProject.owner:
-		context.update({'updatePermission' : True})
-		return render(request, 'project.html', context)
-	return render(request, 'not_found.html')
+	    context.update({'updatePermission' : True})
+	return render(request, 'project.html', context)
+        #print(request.user.email)
+	#return render(request, 'not_found.html')
 
 def delete_handler(request):
 	currProject_name = request.POST.get('target_project',None)
