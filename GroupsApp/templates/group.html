@@ -7,7 +7,7 @@
 		<div class="jumbotron">
 			<h1>{{ group.name }}</h1>
 			<h4>			{% for tag in group.tag.all %}
-									<label class='btn-sm btn-{{tag.tagtype}}'> {{ tag.tagname }} </label>
+									<a href="/project/all?tag={{tag.tagname}}"><label class='btn-sm btn-{{tag.tagtype}}'> {{ tag.tagname }} </label></a>
 								{% endfor %}
 			</h4>
 			{{ group.description | safe }}
@@ -142,8 +142,9 @@
 	         <thead>
 	            <tr>
 	                <th style="width: 20%">Time</th>
-	                 <th style="width: 60%">Comment</th>
-									 <th style="width: 20%">User</th>
+	                 <th style="width: 55%">Comment</th>
+									 <th style="width: 15%">User</th>
+									 <th style="width: 10%"></th>
 	            </tr>
 	         </thead>
 	         <tbody>
@@ -151,7 +152,18 @@
 	            <tr>
 	                <td>{{ item.time }}</td>
 	                <td>{{ item.comment|safe }}</td>
-									<td>{{ item.comment.user.name }}</td>
+									<td>{{ item.user | safe }}</td>
+									{% if item.user == user %}
+									<td><form method="post" enctype="multipart/form-data" action="group/deletecomment" class="panel-body validate">
+					        {% csrf_token %}
+					             <input type="hidden" name="comment_token" id="comment_token" placeholder="{{ item.token }}" value="{{ item.token }}" readonly/>
+
+								 			 <input type="hidden" name="group_name" id="group_name" placeholder="{{group.name}}" value="{{ group.name }}" readonly/>
+					             <input type="submit" value="x" class="btn btn-primary">
+					        </form></td>
+									{% else %}
+									<td></td>
+									{% endif %}
 	            </tr>
 	            {% endfor %}
 	        </tbody>

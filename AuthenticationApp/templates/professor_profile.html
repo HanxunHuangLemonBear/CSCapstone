@@ -14,7 +14,7 @@
 				<tbody>
 					<tr><td>First Name:</td><td>{{currUser.get_first_name}}</td></tr>
           <tr><td>Last Name:</td><td>{{currUser.get_last_name}}</td></tr>
-          <tr><td>University:</td><td>{{currUser.get_university_name}}</td></tr>
+          <tr><td>University:</td><td><a href="/university?name={{currUser.get_university_name}}">{{currUser.get_university_name}}</a></td></tr>
           <tr><td>Title:</td><td>{{currUser.get_title}}</td></tr>
           <tr><td>Office:</td><td>{{currUser.get_office}}</td></tr>
           <tr><td>Phone:</td><td><a href="tel:{{currUser.get_phone_number}}">{{currUser.get_phone_number}}</a></td></tr>

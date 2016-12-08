@@ -145,7 +145,7 @@ class UpdateProfessorForm(forms.ModelForm):
     class Meta:
         model = MyUser
         #logging.getLogger('console').error("error")
-        fields = ('email', 'first_name', 'last_name','university_name','title','office','phone_number','is_associated_professor')
+        fields = ('email', 'first_name', 'last_name','title','office','phone_number','is_associated_professor')
         widgets = {'university_name': forms.widgets.Select(attrs={'readonly': True,'disabled': True})}
 
 
@@ -224,7 +224,7 @@ class UpdateEngineersForm(forms.ModelForm):
     class Meta:
         model = MyUser
         #logging.getLogger('console').error("error")
-        fields = ('email', 'first_name', 'last_name','company_name','graduated_university','title','office','phone_number','is_associated_engineers','about')
+        fields = ('email', 'first_name', 'last_name','graduated_university','title','office','phone_number','is_associated_engineers','about')
         widgets = {'company_name': forms.widgets.Select(attrs={'readonly': True,'disabled': True})}
 
 
@@ -302,7 +302,7 @@ class UpdateStudentForm(forms.ModelForm):
     class Meta:
         model = MyUser
         #logging.getLogger('console').error("error")
-        fields = ('email', 'first_name', 'last_name','university_name','phone_number')
+        fields = ('email', 'first_name', 'last_name','phone_number')
         widgets = {'university_name': forms.widgets.Select(attrs={'readonly': True,'disabled': True})}
 
 

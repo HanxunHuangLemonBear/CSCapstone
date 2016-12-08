@@ -7,7 +7,7 @@
             <img src="/{{ university.photo }}" alt="University Image" width=150/>
 			<h3>{{ university.name }}</h3>
 			<p>{{ university.description|safe }}</p>
-            <h5><a href="{{ university.website }}">Website</a></h5>
+      <h5><a href="http://{{ university.website }}">Website</a></h5>
             {% if userIsMember %}
             <a href="/university/unjoin?name={{ university.name }}" class="btn btn-default">Unjoin this University</a>
             {% else %}
@@ -26,7 +26,7 @@
 				<tbody>
 					{% for item in university.members.all %}
 					<tr>
-						<td>{{ item.get_full_name }}</td>
+            <td><a href="/profile?name={{item.email}}">{{ item.get_full_name }}</a></td>
 					</tr>
 					{% endfor %}
 				</tbody>
@@ -53,5 +53,5 @@
 			</table>
 		</div>
 	</div>
-	
+
 {% endblock %}

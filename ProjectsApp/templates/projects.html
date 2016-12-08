@@ -8,7 +8,9 @@
 			<table class="table table-striped sortable">
 				<thead>
 					<tr>
-						<th>Project Name</th>
+						<th>
+							Project Name for Tag {{target_tag}}
+						</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -18,6 +20,13 @@
 					</tr>
 					{% endfor %}
 				</tbody>
+				{% if tag_list %}
+				<p>Tags:
+				{% for tag in tag_list %}
+					<a href="/project/all?tag={{tag.tagname}}"><label class='btn-sm btn-{{tag.tagtype}}'>{{ tag.tagname }}</label></a>
+				{% endfor %}
+				{% endif %}
+			</p>
 			</table>
 		</div>
 	</div>
