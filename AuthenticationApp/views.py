@@ -17,6 +17,10 @@ import logging
 
 # Auth Views
 target_user = None
+def get_all_users(request):
+	user_list = MyUser.objects.all()
+	context = {'users' : user_list}
+	return render(request, 'users.html', context)
 
 def auth_login(request):
 	form = LoginForm(request.POST or None)

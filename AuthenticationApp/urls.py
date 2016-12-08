@@ -14,5 +14,5 @@ urlpatterns = [
     url(r'^update$', views.update_profile, name='UpdateProfile'),
     url(r'^profile$', views.get_profile, name='Profile'),
     url(r'^update_handler$', views.update_handler, name='Update_handler'),
-
+    url(r'^all$', views.get_all_users, name='get_all_users'),
 ]
