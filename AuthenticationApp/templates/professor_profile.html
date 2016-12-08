@@ -22,7 +22,13 @@
 	  <tr><td>Title:</td><td>{{currUser.get_title}}</td></tr>
 
           <tr><td>Office:</td><td>{{currUser.get_office}}</td></tr>
+
+          {% if currUser.get_phone_number == None %}
+          <tr><td>Phone:</td><td>{{currUser.get_phone_number}}</td></tr>
+          {% else %}
           <tr><td>Phone:</td><td><a href="tel:{{currUser.get_phone_number}}">{{currUser.get_phone_number}}</a></td></tr>
+          {% endif %}
+
           {% if updatePermission == True %}
           <tr><td>
             <form method="POST" action="update_handler">{% csrf_token %}
