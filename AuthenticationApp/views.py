@@ -141,12 +141,13 @@ def get_profile(request):
 		context = {'currUser' : profile_User, 'updatePermission' : True,}
 	else:
 		context = {'currUser' : profile_User, 'updatePermission' : False,}
+
 	if profile_User.is_professor == True:
-		if profile_User.is_associated_professor == True:
+		if request.user.is_associated_professor == True and request.user.university_name == profile_User.university_name:
 			context = {'currUser' : profile_User, 'updatePermission' : True,}
 		return render(request, 'professor_profile.html',context)
 	elif profile_User.is_engineer == True:
-		if profile_User.is_associated_engineers == True:
+		if request.user.is_associated_engineers == True and request.user.company_name == profile_User.company_name:
 			context = {'currUser' : profile_User, 'updatePermission' : True,}
 		return render(request, 'engineers_profile.html',context)
 	elif profile_User.is_student == True:
