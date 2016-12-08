@@ -126,7 +126,7 @@
 	{% if userIsMember %}
 	<div class="container" role="main">
 	    <div class="panel panel-default">
-	        <form method="post" enctype="multipart/form-data" action="addcomment" class="panel-body validate">
+	        <form method="post" enctype="multipart/form-data" action="group/addcomment" class="panel-body validate">
 	        {% csrf_token %}
 	             <label for="comment">Add Comment</label>
 	             <input type="hidden" name="group_name" id="group_name" placeholder="{{group.name}}" value="{{ group.name }}" readonly/>
@@ -154,7 +154,13 @@
 	                <td>{{ item.comment|safe }}</td>
 									<td>{{ item.user | safe }}</td>
 									{% if item.user == user %}
-									<td>True</td>
+									<td><form method="post" enctype="multipart/form-data" action="group/deletecomment" class="panel-body validate">
+					        {% csrf_token %}
+					             <input type="hidden" name="comment_token" id="comment_token" placeholder="{{ item.token }}" value="{{ item.token }}" readonly/>
+
+								 			 <input type="hidden" name="group_name" id="group_name" placeholder="{{group.name}}" value="{{ group.name }}" readonly/>
+					             <input type="submit" value="x" class="btn btn-primary">
+					        </form></td>
 									{% else %}
 									<td></td>
 									{% endif %}

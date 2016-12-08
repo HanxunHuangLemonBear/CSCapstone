@@ -340,3 +340,28 @@ def addComment(request):
         'groups' : groups_list,
     }
     return render(request, 'groups.html', context)
+
+def commentDelete(request):
+    if request.method == 'POST':
+        form = forms.CommentDeleteForm(request.POST)
+        in_user = request.user
+        if form.is_valid():
+            in_name = form.cleaned_data['group_name']
+            in_group = models.Group.objects.get(name__exact=in_name)
+            in_token = form.cleaned_data['token']
+            comment_to_delete = models.Comment.object.get(token=in_token)
+            models.Comment.objects.remove(comment_to_delete)
+            comments_list = models.Comment.objects.all()
+            context = {
+                'user' : in_user,
+                'comments' : comments_list,
+                'name' : in_name,
+                'group' : in_group,
+                'userIsMember' : True,
+            }
+            return render(request, 'group.html', context)
+    groups_list = models.Group.objects.all()
+    context = {
+        'groups' : groups_list,
+    }
+    return render(request, 'groups.html', context)
