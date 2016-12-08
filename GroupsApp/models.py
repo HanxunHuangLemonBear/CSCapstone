@@ -6,7 +6,7 @@ from django.db import models
 from AuthenticationApp.models import MyUser
 from ProjectsApp.models import Project
 from CommentsApp.models import Comment
-
+from CommentsApp.models import Token
 # Create your models here.
 class Group(models.Model):
     name = models.CharField(max_length=30)

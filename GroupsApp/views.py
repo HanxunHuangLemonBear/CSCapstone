@@ -303,6 +303,7 @@ def commentIDgenerator():
     token = ""
     for i in range(10):
         token = token + random.choice(string.ascii_letters)
+    print(token)
     return token
 
 
@@ -313,7 +314,9 @@ def addComment(request):
         if form.is_valid():
             in_name = form.cleaned_data['group_name']
             in_group = models.Group.objects.get(name__exact=in_name)
-            new_comment = models.Comment(comment=form.cleaned_data['description'], user=request.user, group=in_group, token=commentIDgenerator())
+            new_token = models.Token(token=commentIDgenerator())
+            new_token.save()
+            new_comment = models.Comment(comment=form.cleaned_data['description'], user=request.user, group=in_group, token=new_token)
             new_comment.save()
             comments_list = models.Comment.objects.all().filter(group=in_group)
             context = {
@@ -346,12 +349,13 @@ def commentDelete(request):
         form = forms.CommentDeleteForm(request.POST)
         in_user = request.user
         if form.is_valid():
+            print("valid form")
             in_name = form.cleaned_data['group_name']
             in_group = models.Group.objects.get(name__exact=in_name)
-            in_token = form.cleaned_data['token']
-            comment_to_delete = models.Comment.object.get(token=in_token)
-            models.Comment.objects.remove(comment_to_delete)
-            comments_list = models.Comment.objects.all()
+            in_token = models.Token.objects.get(token=form.cleaned_data['token'])
+            comment_to_delete = models.Comment.objects.get(token=in_token)
+            comment_to_delete.delete()
+            comments_list = models.Comment.objects.all().filter(group=in_group)
             context = {
                 'user' : in_user,
                 'comments' : comments_list,
@@ -360,6 +364,8 @@ def commentDelete(request):
                 'userIsMember' : True,
             }
             return render(request, 'group.html', context)
+        else:
+            print("invalid form")
     groups_list = models.Group.objects.all()
     context = {
         'groups' : groups_list,
