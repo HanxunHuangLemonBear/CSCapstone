@@ -7,7 +7,11 @@
             <img src="/{{ university.photo }}" alt="University Image" width=150/>
 			<h2>{{ course.tag }}</h2>
 			<h3>{{ course.name }}</h3>
+<<<<<<< HEAD
 			<p>{{ course.description | safe}}</p>
+=======
+			<p>{{ course.description|safe }}</p>
+>>>>>>> 2ce502f115aed4bd162b87c3728a89d2db36d653
             {% if userInCourse %}
             <a href="/university/course/unjoin?name={{ university.name }}&course={{ course.tag }}" class="btn btn-default">Unjoin this Course</a>
             {% else %}
@@ -28,7 +32,7 @@
 				<tbody>
 					{% for item in course.members.all %}
 					<tr>
-						<td>{{ item.get_full_name }}</td>
+            <td><a href="/profile?name={{item.email}}">{{ item.get_full_name }}</a></td>
 						<td>
 							{% if not item.is_professor %}
 							<a href="/university/course/unjoinTeach?name={{ university.name }}&course={{ course.tag }}&me={{ item.get_full_name }}" class="btn btn-default">Remove User</a>
@@ -40,5 +44,5 @@
 			</table>
 		</div>
 	</div>
-	
+
 {% endblock %}
